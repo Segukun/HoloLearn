@@ -2,7 +2,7 @@ const bcryptjs = require("bcryptjs");
 const app = require("./app");
 const connection = require("./connection");
 
-const { fetchUsersMiddleware, respondWithUsers, attachCoursesToUsers } = require('./middlewares/users');
+const { fetchUsersMiddleware, respondWithUsers, attachCoursesToUsers, attachLessonsToUsers } = require('./middlewares/users');
 const { fetchCoursesMiddleware, respondWithCourses } = require('./middlewares/courses');
 const { fetchLessonsMiddleware, respondWithLessons } = require('./middlewares/lessons');
 
@@ -12,7 +12,7 @@ const { fetchLessonsMiddleware, respondWithLessons } = require('./middlewares/le
 // ! Tabla users
 
 // Obtener usuarios y responder
-app.get('/user', fetchUsersMiddleware, attachCoursesToUsers, respondWithUsers);
+app.get('/user', fetchUsersMiddleware, attachCoursesToUsers, attachLessonsToUsers, respondWithUsers);
 
 // Ejemplo de uso de middleware en otra ruta con un manejador personalizado
 app.get('/user/summary', fetchUsersMiddleware, (req, res) => {
