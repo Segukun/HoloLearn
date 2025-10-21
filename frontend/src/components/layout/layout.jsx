@@ -8,7 +8,7 @@ export default function Layout() {
     <div className="layout">
       <Header />
       <main className="main">
-        <Outlet /> {/* aka ce renderisan las pages Home/Courses/Login :D */}
+        <Outlet /> {/* aka ce renderisan las pages Home/Courses/Login ༼ つ ◕_◕ ༽つ */}
       </main>
       <Footer />
     </div>
