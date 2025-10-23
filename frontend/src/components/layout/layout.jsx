@@ -5,6 +5,7 @@ import "../../styles/components/layout.css";
 
 export default function Layout() {
   return (
+    <>
     <div className="layout">
       <Header />
       <main className="main">
@@ -12,5 +13,6 @@ export default function Layout() {
       </main>
       <Footer />
     </div>
+    </>
   );
 }
