@@ -1,4 +1,3 @@
-const bcryptjs = require("bcryptjs");
 const app = require("./app");
 const connection = require("./connection");
 
@@ -11,7 +10,7 @@ const { fetchLessonsMiddleware, respondWithLessons } = require('./middlewares/le
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla users
 
-// Obtener usuarios y responder
+// Obtener usuarios y responder, son muchos datos, crear metodos que solo usen algunos y de solo un usuario, no de todos, este seria mas para un admin
 app.get('/user', fetchUsersMiddleware, attachCoursesToUsers, attachLessonsToUsers, respondWithUsers);
 
 // Ejemplo de uso de middleware en otra ruta con un manejador personalizado
