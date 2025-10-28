@@ -1,0 +1,41 @@
+/* Reset & base theme */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    font-family: "Inter", system-ui, sans-serif;
+    background-color: #f4f4f4;
+    color: #1e1e1e;
+}
+
+/* Prevent scroll jump when dropdowns appear */
+body {
+    overflow-x: hidden;
+}
+
+/* Default link style (keeps accent color consistent with your header) */
+a {
+    color: #00b7ff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #009fe0;
+}
+
+/* Give sections some breathing room */
+main {
+    padding: 32px 48px;
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 24px 20px;
+    }
+}
