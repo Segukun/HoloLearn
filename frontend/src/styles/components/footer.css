@@ -1,0 +1,89 @@
+/* ==== FOOTER GENERAL ==== */
+.footer {
+  background-color: #f4f8fb;
+  border-top: 1px solid #e6e6e6;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ==== CONTENIDO PRINCIPAL ==== */
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2.5rem;
+}
+
+/* ==== LOGO Y MARCA ==== */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footer-logo-img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.footer-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.footer-subtitle {
+  color: #00b7ff;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* ==== SECCIONES ==== */
+.footer-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #000;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-link {
+  color: #454545;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #00b7ff;
+}
+
+/* ==== BARRA INFERIOR ==== */
+.footer-bottom {
+  background-color: rgba(0, 183, 255, 0.39);
+  text-align: center;
+  padding: 1rem 0;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #000;
+  border-top: 1px solid #d9ecf7;
+}
