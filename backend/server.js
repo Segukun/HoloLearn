@@ -2,7 +2,7 @@ const app = require("./app");
 const connection = require("./connection");
 
 const {
-  fetchUsersMiddleware,
+  fetchUsers,
   respondWithUsers,
   attachCoursesToUsers,
   attachLessonsToUsers,
@@ -16,11 +16,17 @@ const {
   respondWithLessons,
 } = require("./middlewares/lessons");
 const {
-  loginMiddleware,
-  createUserMiddleware,
-  logoutMiddleware,
+  login,
+  createUser,
+  logout,
   requireAuth,
 } = require("./middlewares/account");
+const {
+  fetchUserById,
+  respondWithUser,
+  attachCoursesToUser,
+  attachLessonsToUser,
+} = require("./middlewares/user");
 
 // # TABLAS: categories, courses, course_categories, enrollments, lesson_progress, lessons, users
 
@@ -29,15 +35,15 @@ const {
 
 // Obtener usuarios y responder, son muchos datos, crear metodos que solo usen algunos y de solo un usuario, no de todos, este seria mas para un admin
 app.get(
-  "/user",
-  fetchUsersMiddleware,
+  "/users",
+  fetchUsers,
   attachCoursesToUsers,
   attachLessonsToUsers,
   respondWithUsers
 );
 
 // Ejemplo de uso de middleware en otra ruta con un manejador personalizado
-app.get("/user/summary", fetchUsersMiddleware, (req, res) => {
+app.get("/users/summary", fetchUsers, (req, res) => {
   const summary = req.users.map((u) => ({
     id: u.iduser,
     email: u.email,
@@ -45,6 +51,9 @@ app.get("/user/summary", fetchUsersMiddleware, (req, res) => {
   }));
   res.json(summary);
 });
+
+//Obtener un solo usuario por ID
+app.get("/user/:id", fetchUserById, attachCoursesToUser, attachLessonsToUser, respondWithUser);
 
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla enrollments --> Intermedia de users y courses con status
@@ -83,10 +92,10 @@ app.get("/lessons", fetchLessonsMiddleware, respondWithLessons);
 // ! Manejar la cuenta del usuario: login, logout, crear cuenta, eliminar cuenta, etc. Tambien usa la tabla de users
 
 //Login:
-app.post("/user/login", loginMiddleware, (req, res) => {});
+app.post("/user/login", login, (req, res) => {});
 
 //Create user
-app.post("/user/create", createUserMiddleware, (req, res) => {});
+app.post("/user/create", createUser, (req, res) => {});
 
 //Logout
-app.post("/user/logout", requireAuth, logoutMiddleware, (req, res) => {});
+app.post("/user/logout", requireAuth, logout, (req, res) => {});

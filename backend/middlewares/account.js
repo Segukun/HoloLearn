@@ -3,7 +3,7 @@ const connection = require("../connection");
 // Este archivo va a ser para verificar y manejar la cuenta del usuario, login, logout, crear cuenta, eliminar cuenta, etc
 
 //Ejemplo de login:
-function loginMiddleware(req, res, next) {
+function login(req, res, next) {
   const { email, password } = req.body;
   const sql = "SELECT * FROM user WHERE email = ?";
 
@@ -37,7 +37,7 @@ function loginMiddleware(req, res, next) {
 }
 
 //Logout
-function logoutMiddleware(req, res, next) {
+function logout(req, res, next) {
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).json({
@@ -61,7 +61,7 @@ function requireAuth(req, res, next) {
 }
 
 //Create user
-function createUserMiddleware(req, res, next) {
+function createUser(req, res, next) {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
@@ -84,8 +84,8 @@ function createUserMiddleware(req, res, next) {
 }
 
 module.exports = {
-  loginMiddleware,
-  createUserMiddleware,
-  logoutMiddleware,
+  login,
+  createUser,
+  logout,
   requireAuth,
 };

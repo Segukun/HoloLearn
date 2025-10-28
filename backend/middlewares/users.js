@@ -3,8 +3,10 @@ const { User } = require("../classes/classUser");
 const { Course } = require("../classes/classCourse");
 const { Lesson } = require("../classes/classLesson");
 
+//! USUARIOS EN PLURAL
+
 // Middleware: traer usuarios de la base de datos y adjuntarlos a req.users
-function fetchUsersMiddleware(req, res, next) {
+function fetchUsers(req, res, next) {
   connection.query("SELECT * FROM user", (err, results) => {
     if (err) return next(err);
     req.users = results.map(
@@ -16,7 +18,7 @@ function fetchUsersMiddleware(req, res, next) {
 }
 
 //Añadir los cursos a los que esta inscripto cada usuario
-function attachCoursesToUsers(req, _, next) {
+function attachCoursesToUsers(req, res, next) {
   const sql =
     "SELECT c.* FROM courses c INNER JOIN enrollments e ON c.idcourses = e.idcourses WHERE e.iduser = ?";
 
@@ -106,7 +108,7 @@ function respondWithUsers(req, res) {
 }
 
 module.exports = {
-  fetchUsersMiddleware,
+  fetchUsers,
   respondWithUsers,
   attachCoursesToUsers,
   attachLessonsToUsers,
