@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const session = require("express-session");
 const cors = require("cors");
 
 app.use(
@@ -14,4 +15,15 @@ app.listen(3000, () => {
 });
 
 app.use(express.json());
+app.use(
+  session({
+    secret: "laFolmula",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false, // En producción con HTTPS debe ser true
+      maxAge: 1000 * 60 * 60 * 24, // 24 horas
+    },
+  })
+);
 module.exports = app;

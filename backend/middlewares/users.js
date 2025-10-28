@@ -17,8 +17,6 @@ function fetchUsersMiddleware(req, res, next) {
 
 //Añadir los cursos a los que esta inscripto cada usuario
 function attachCoursesToUsers(req, _, next) {
-  // Implementar la lógica para adjuntar los cursos a los que está inscrito cada usuario, crear cada curso como un objeto Course y adjuntarlo al usuario correspondiente
-  // Hacer un inner join entre enrollments y courses para traer los cursos de cada usuario
   const sql =
     "SELECT c.* FROM courses c INNER JOIN enrollments e ON c.idcourses = e.idcourses WHERE e.iduser = ?";
 
@@ -87,7 +85,7 @@ function attachLessonsToUsers(req, res, next) {
             });
           });
         })
-      ).then(() => user); // Retornamos el usuario después de procesar todos sus cursos
+      ).then(() => user); 
     })
   )
     .then((updatedUsers) => {

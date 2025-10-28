@@ -21,10 +21,71 @@ function loginMiddleware(req, res, next) {
     if (!autenticado) {
       return res.status(401).send("Incorrect password");
     }
-    res.json(results);
+
+    req.session.userId = results[0].iduser;
+    req.session.email = results[0].email;
+    req.session.isAuthenticated = true;
+
+    res.json({
+      message: "Login successful",
+      user: {
+        id: results[0].iduser,
+        email: results[0].email,
+      },
+    });
+  });
+}
+
+//Logout
+function logoutMiddleware(req, res, next) {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({
+        error: "Error logging out",
+      });
+    }
+
+    res.json({
+      message: "Logout successful",
+    });
+  });
+}
+
+function requireAuth(req, res, next) {
+  if (!req.session.isAuthenticated) {
+    return res.status(401).json({ 
+      error: "Not authenticated. Please log in." 
+    });
+  }
+  next();
+}
+
+//Create user
+function createUserMiddleware(req, res, next) {
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).send("Missing required fields");
+  }
+
+  const passwordHash = bcryptjs.hashSync(password, 10);
+  const sql =
+    "INSERT INTO user (full_name, email, password_hash) VALUES (?, ?, ?)";
+
+  connection.query(sql, [name, email, passwordHash], (err, results) => {
+    if (err) {
+      return res.status(500).send("Error creating user");
+    }
+    res.status(201).json({
+      mensaje: "User created successfully",
+      alumno: { name, email, password },
+    });
   });
 }
 
 module.exports = {
   loginMiddleware,
+  createUserMiddleware,
+  logoutMiddleware,
+  requireAuth,
 };

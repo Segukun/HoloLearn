@@ -15,7 +15,12 @@ const {
   fetchLessonsMiddleware,
   respondWithLessons,
 } = require("./middlewares/lessons");
-const { loginMiddleware } = require("./middlewares/account");
+const {
+  loginMiddleware,
+  createUserMiddleware,
+  logoutMiddleware,
+  requireAuth,
+} = require("./middlewares/account");
 
 // # TABLAS: categories, courses, course_categories, enrollments, lesson_progress, lessons, users
 
@@ -76,5 +81,12 @@ app.get("/lessons", fetchLessonsMiddleware, respondWithLessons);
 // ! Tabla lesson_progress --> Intermedia de clase e inscripciones con status(lesson_progress)
 
 // ! Manejar la cuenta del usuario: login, logout, crear cuenta, eliminar cuenta, etc. Tambien usa la tabla de users
-//Ejemplo de login:
-app.post("/login", loginMiddleware, (req, res) => {});
+
+//Login:
+app.post("/user/login", loginMiddleware, (req, res) => {});
+
+//Create user
+app.post("/user/create", createUserMiddleware, (req, res) => {});
+
+//Logout
+app.post("/user/logout", requireAuth, logoutMiddleware, (req, res) => {});
