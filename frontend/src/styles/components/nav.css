@@ -1,0 +1,60 @@
+/* Horizontal nav inside the right cluster */
+.nav-list {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Pill links */
+.nav-link {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--link);
+    text-decoration: none;
+    line-height: 1;
+    padding: 8px 16px;
+    border-radius: 999px;
+    transition: background .2s, color .2s, box-shadow .2s, transform .06s;
+}
+
+.nav-link:hover {
+    color: var(--accent);
+    /* was using undefined --accent-rgb */
+}
+
+.nav-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 183, 255, .28);
+}
+
+.nav-link.active {
+    color: #ffffff;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 183, 255, .22);
+}
+
+/* Responsive spacing */
+@media (max-width:900px) {
+    .nav-list {
+        gap: 24px;
+    }
+
+    .nav-link {
+        font-size: 17px;
+        padding: 7px 12px;
+    }
+}
+
+@media (max-width:640px) {
+    .nav-list {
+        gap: 16px;
+    }
+
+    .nav-link {
+        font-size: 16px;
+        padding: 6px 10px;
+    }
+}

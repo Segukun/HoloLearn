@@ -1,7 +1,7 @@
 import React from "react";
-import "../../styles/components/Footer.css";
-import imgHololearnAlt1 from "../../../public/img/logos/HololearnAlt.png";
+import "../../styles/components/footer.css";
 
+// small presentational item
 function FooterLink({ text }) {
   return <li className="footer-link">{text}</li>;
 }
@@ -23,11 +23,12 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-content">
-        {/* LOGO Y LEMA */}
+        {/* Brand */}
         <div className="footer-brand">
           <div className="footer-logo">
+            {/* When using /public, reference with an absolute path */}
             <img
-              src={imgHololearnAlt1}
+              src="/img/logos/HololearnAlt.png"
               alt="HoloLearn Logo"
               className="footer-logo-img"
             />
@@ -36,19 +37,18 @@ export default function Footer() {
           <p className="footer-subtitle">Learn, Create, Go live</p>
         </div>
 
-        {/* SECCIONES */}
+        {/* Sections */}
         <FooterSection
           title="Explore"
           links={["Available Courses", "Categories", "Categories items"]}
         />
-
         <FooterSection
           title="Information"
           links={["About us", "Privacy Policy", "Terms & Conditions", "Contact"]}
         />
       </div>
 
-      {/* BARRA INFERIOR */}
+      {/* Bottom bar */}
       <div className="footer-bottom">
         Project developed for educational purposes - ©2025 HoloLearn Team
       </div>
