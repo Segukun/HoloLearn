@@ -1,7 +1,7 @@
 const bcryptjs = require("bcryptjs");
 const connection = require("../connection");
 // Este archivo va a ser para verificar y manejar la cuenta del usuario, login, logout, crear cuenta, eliminar cuenta, etc
-
+//!Archivo mas importante
 //Ejemplo de login:
 function login(req, res, next) {
   const { email, password } = req.body;
@@ -82,6 +82,8 @@ function createUser(req, res, next) {
     });
   });
 }
+
+// TODO: Agregar funciones para eliminar cuenta, actualizar datos, etc. Suscribirse a cursos, completar clases, etc.
 
 module.exports = {
   login,

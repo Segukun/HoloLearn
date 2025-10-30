@@ -1,5 +1,5 @@
 class User {
-  constructor(iduser, email, full_name, password_hash, category, courses = []) {
+  constructor(iduser, email, full_name, category, password_hash = "", courses = []) {
     this.iduser = iduser;
     this.email = email;
     this.full_name = full_name;

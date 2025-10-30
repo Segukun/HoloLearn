@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const session = require("express-session");
+const session = require("express-session"); // TODO: A revisar hoy todo lo relacionado con este modulo y con el archivo account.js
 const cors = require("cors");
 
 app.use(
@@ -10,14 +10,11 @@ app.use(
   })
 );
 
-app.listen(3000, () => {
-  console.log("Servidor corriendo en http://localhost:3000");
-});
-
 app.use(express.json());
+
 app.use(
   session({
-    secret: "laFolmula",
+    secret: "secretkey123",
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -26,4 +23,9 @@ app.use(
     },
   })
 );
+
+app.listen(3000, () => {
+  console.log("Servidor corriendo en http://localhost:3000");
+});
+
 module.exports = app;

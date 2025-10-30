@@ -1,6 +1,8 @@
 const app = require("./app");
 const connection = require("./connection");
 
+// ! LO MAS NECESARIO ES EL MANEJO DE LA DE LA CUENTA
+
 const {
   fetchUsers,
   respondWithUsers,
@@ -8,13 +10,16 @@ const {
   attachLessonsToUsers,
 } = require("./middlewares/users");
 const {
-  fetchCoursesMiddleware,
+  fetchCourses,
+  fetchCourseById,
+  attachLessonsToCourses,
+  attachStudentsToCourses,
+  attachLessonsToCourseById,
+  attachStudentsToCourseById,
+  respondWithCourse,
   respondWithCourses,
 } = require("./middlewares/courses");
-const {
-  fetchLessonsMiddleware,
-  respondWithLessons,
-} = require("./middlewares/lessons");
+const { fetchLessons, respondWithLessons } = require("./middlewares/lessons");
 const {
   login,
   createUser,
@@ -24,6 +29,7 @@ const {
 const {
   fetchUserById,
   respondWithUser,
+  respondWithUserProgress,
   attachCoursesToUser,
   attachLessonsToUser,
 } = require("./middlewares/user");
@@ -53,7 +59,13 @@ app.get("/users/summary", fetchUsers, (req, res) => {
 });
 
 //Obtener un solo usuario por ID
-app.get("/user/:id", fetchUserById, attachCoursesToUser, attachLessonsToUser, respondWithUser);
+app.get(
+  "/user/:id",
+  fetchUserById,
+  attachCoursesToUser,
+  attachLessonsToUser,
+  respondWithUser
+);
 
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla enrollments --> Intermedia de users y courses con status
@@ -61,14 +73,35 @@ app.get("/user/:id", fetchUserById, attachCoursesToUser, attachLessonsToUser, re
 //obtener inscripciones y responder
 
 //TODO: Obtener el progreso del curso para cada usuario
+app.get(
+  "/user/:id/progress",
+  fetchUserById,
+  attachCoursesToUser,
+  attachLessonsToUser,
+  respondWithUserProgress
+);
 
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla courses
 
 // Obtener cursos y responder
-app.get("/courses", fetchCoursesMiddleware, respondWithCourses);
+app.get(
+  "/course",
+  fetchCourses,
+  attachLessonsToCourses,
+  attachStudentsToCourses,
+  respondWithCourses
+);
 
-//TODO: Obtener el profesor y los cursantes de cada curso
+app.get(
+  "/course/:id",
+  fetchCourseById,
+  attachLessonsToCourseById,
+  attachStudentsToCourseById,
+  respondWithCourse
+);
+
+//TODO: Obtener el profesor
 
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla categories
@@ -82,9 +115,7 @@ app.get("/courses", fetchCoursesMiddleware, respondWithCourses);
 // ! Tabla lessons
 
 //Obtener clases y responder
-app.get("/lessons", fetchLessonsMiddleware, respondWithLessons);
-
-//TODO: Obtener el progreso de la clase para cada usuario
+app.get("/lessons", fetchLessons, respondWithLessons);
 
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla lesson_progress --> Intermedia de clase e inscripciones con status(lesson_progress)
@@ -92,10 +123,10 @@ app.get("/lessons", fetchLessonsMiddleware, respondWithLessons);
 // ! Manejar la cuenta del usuario: login, logout, crear cuenta, eliminar cuenta, etc. Tambien usa la tabla de users
 
 //Login:
-app.post("/user/login", login, (req, res) => {});
+app.post("/user/login", login);
 
 //Create user
-app.post("/user/create", createUser, (req, res) => {});
+app.post("/user/create", createUser);
 
 //Logout
-app.post("/user/logout", requireAuth, logout, (req, res) => {});
+app.post("/user/logout", requireAuth, logout);

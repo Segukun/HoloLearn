@@ -11,7 +11,7 @@ function fetchUsers(req, res, next) {
     if (err) return next(err);
     req.users = results.map(
       (u) =>
-        new User(u.iduser, u.email, u.full_name, u.password_hash, u.category)
+        new User(u.iduser, u.email, u.full_name, u.category, u.password_hash)
     );
     next();
   });
@@ -48,7 +48,6 @@ function attachCoursesToUsers(req, res, next) {
   )
     .then((updatedUsers) => {
       req.users = updatedUsers;
-      //console.log("All users after attaching courses:", req.users);
       next();
     })
     .catch((err) => {
@@ -72,14 +71,17 @@ function attachLessonsToUsers(req, res, next) {
                 console.error("Error fetching lessons for courses:", err);
                 return resolve(course); // Continue with course even if error
               }
-              const lessons = results.map((r) => new Lesson(
-                r.idlessons,
-                r.idcourse,
-                r.title,
-                r.content,
-                r.lesson_order,
-                r.content_type
-              ));
+              const lessons = results.map(
+                (r) =>
+                  new Lesson(
+                    r.idlessons,
+                    r.idcourse,
+                    r.title,
+                    r.content,
+                    r.lesson_order,
+                    r.content_type
+                  )
+              );
 
               console.log(results);
               course.setLessons(lessons);
@@ -87,12 +89,11 @@ function attachLessonsToUsers(req, res, next) {
             });
           });
         })
-      ).then(() => user); 
+      ).then(() => user);
     })
   )
     .then((updatedUsers) => {
       req.users = updatedUsers;
-      //console.log("All users after attaching lessons:", req.users);
       next();
     })
     .catch((err) => {
