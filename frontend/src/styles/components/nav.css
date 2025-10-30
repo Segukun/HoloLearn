@@ -22,10 +22,16 @@
 
 .nav-link:hover {
     color: var(--accent);
+    /* was using undefined --accent-rgb */
+}
+
+.nav-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 183, 255, .28);
 }
 
 .nav-link.active {
-    color: #fff;
+    color: #ffffff;
     background: var(--accent);
     box-shadow: 0 0 0 3px rgba(0, 183, 255, .22);
 }

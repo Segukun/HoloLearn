@@ -13,10 +13,11 @@
     --accent: #06b7ff;
 }
 
-/* ===== Header: 2 columns (left brand / right cluster) ===== */
+/* ===== Header: left brand / right cluster ===== */
 .header {
     width: 100%;
     min-height: 96px;
+    /* keep a single, explicit height */
     background: var(--bg);
     border-bottom: 2px solid rgba(0, 183, 255, .95);
     box-shadow: 0 6px 16px rgba(0, 183, 255, .16);
@@ -64,13 +65,13 @@
     color: var(--link);
 }
 
-/* Right cluster: nav + profile aligned to the far right */
+/* Right cluster: nav + theme + profile */
 .header-right {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 28px;
-    /* space between nav and avatar */
+    gap: 20px;
+    /* single source of truth (was duplicated) */
 }
 
 /* Profile avatar & menu */
@@ -91,13 +92,13 @@
 .profile-btn img {
     width: 50px;
     height: 50px;
-    /* slightly smaller */
     border-radius: 50%;
     border: 3px solid var(--accent);
     background: #fff;
     object-fit: cover;
 }
 
+/* Dropdown */
 .profile:hover .profile-menu,
 .profile:focus-within .profile-menu {
     opacity: 1;
@@ -142,6 +143,35 @@
     height: 1px;
     background: rgba(0, 0, 0, .08);
     margin: 6px 0;
+}
+
+/* Theme toggle (inside header-right) */
+.theme-toggle {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    display: inline-grid;
+    place-items: center;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
+    transition: transform .15s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.06);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .22);
+}
+
+.theme-toggle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 183, 255, .35);
+}
+
+[data-theme="dark"] .theme-toggle {
+    background: var(--accent);
 }
 
 /* ===== Responsive ===== */
@@ -190,6 +220,4 @@
     .brand-tagline {
         display: none;
     }
-
-    /* save space on very small screens */
 }

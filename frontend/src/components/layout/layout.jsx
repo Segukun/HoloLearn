@@ -6,13 +6,13 @@ import "../../styles/components/layout.css";
 export default function Layout() {
   return (
     <>
-    <div className="layout">
-      <Header />
-      <main className="main">
-        <Outlet /> {/* aka ce renderisan las pages Home/Courses/Login ༼ つ ◕_◕ ༽つ */}
-      </main>
-      <Footer />
-    </div>
+      <div className="layout">
+        <Header />
+        <main className="main">
+          <Outlet /> {/* aka ce renderisan las pages Home/Courses/Login ༼ つ ◕_◕ ༽つ */}
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }

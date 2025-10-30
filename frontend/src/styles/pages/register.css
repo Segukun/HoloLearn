@@ -1,4 +1,4 @@
-/* Fallback tokens (will be overridden if already defined globally) */
+/* Fallback tokens (override if already defined globally) */
 :root {
     --bg: #ffffff;
     --text: #1e1e1e;
@@ -22,7 +22,7 @@
 }
 
 /* Layout */
-.login-page {
+.register-page {
     min-height: calc(100dvh - 0px);
     display: grid;
     place-items: start center;
@@ -31,7 +31,7 @@
     color: var(--text);
 }
 
-.login-card {
+.register-card {
     width: min(960px, 100%);
     background: var(--surface);
     border: 1px solid var(--border);
@@ -41,38 +41,38 @@
 }
 
 /* Header */
-.login-header {
+.reg-header {
     margin-bottom: 16px;
 }
 
-.login-brand {
+.reg-brand {
     display: flex;
     align-items: center;
     gap: 14px;
 }
 
-.login-logo {
+.reg-logo {
     width: 56px;
     height: 56px;
     border-radius: 12px;
     object-fit: cover;
 }
 
-.login-title {
+.reg-title {
     font-size: 28px;
     font-weight: 800;
     margin: 0;
     color: var(--text);
 }
 
-.login-subtitle {
+.reg-subtitle {
     margin: 2px 0 0;
     color: var(--link);
     font-weight: 600;
 }
 
 /* Alert */
-.login-alert {
+.reg-alert {
     background: rgba(255, 68, 68, .08);
     border: 1px solid rgba(255, 68, 68, .35);
     color: #b42318;
@@ -82,7 +82,7 @@
 }
 
 /* Form */
-.login-form {
+.reg-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 18px 24px;
@@ -132,7 +132,7 @@
     margin-top: 6px;
 }
 
-/* Password field (show/hide) */
+/* Password show/hide */
 .pwd-field {
     position: relative;
     display: grid;
@@ -150,7 +150,6 @@
     background: transparent;
     cursor: pointer;
     font-size: 16px;
-    line-height: 1;
     color: var(--muted);
 }
 
@@ -158,7 +157,7 @@
     color: var(--link);
 }
 
-/* Checkbox */
+/* Checkbox & links */
 .checkbox {
     display: inline-flex;
     gap: 8px;
@@ -171,8 +170,17 @@
     height: 18px;
 }
 
-/* Button */
-.login-btn {
+.link-muted {
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.link-muted:hover {
+    color: var(--link);
+}
+
+/* Submit button */
+.reg-btn {
     grid-column: 1 / -1;
     height: 46px;
     border: none;
@@ -186,59 +194,34 @@
     box-shadow: 0 6px 16px rgba(0, 0, 0, .16);
 }
 
-.login-btn:hover {
+.reg-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, .20);
 }
 
-.login-btn:disabled {
+.reg-btn:disabled {
     opacity: .6;
     cursor: not-allowed;
     transform: none;
 }
 
-/* Footer */
-.login-footer {
-    margin-top: 14px;
-    color: var(--muted);
-}
-
-.login-footer a {
-    color: var(--link);
-    text-decoration: none;
-}
-
-.login-footer a:hover {
-    color: var(--accent);
-}
-
-/* Links */
-.link-muted {
-    color: var(--muted);
-    text-decoration: none;
-}
-
-.link-muted:hover {
-    color: var(--link);
-}
-
 /* Responsive */
 @media (max-width: 900px) {
-    .login-form {
+    .reg-form {
         grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 600px) {
-    .login-card {
+    .register-card {
         padding: 20px;
     }
 
-    .login-title {
+    .reg-title {
         font-size: 24px;
     }
 
-    .login-logo {
+    .reg-logo {
         width: 48px;
         height: 48px;
     }

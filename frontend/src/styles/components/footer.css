@@ -3,7 +3,7 @@
   background-color: #f4f8fb;
   border-top: 1px solid #e6e6e6;
   font-family: 'Inter', sans-serif;
-   justify-content: flex-start;
+  justify-content: flex-start;
 }
 
 /* ==== CONTENIDO PRINCIPAL ==== */
@@ -12,8 +12,10 @@
   margin: 0 auto;
   padding: 3rem 1.5rem;
   display: grid;
-  grid-template-columns: 6fr 1fr 1fr; /* tres columnas: 2 a la izq, 1 más separada a la derecha */
-  column-gap: 6rem; /* sparación entre columnas */
+  grid-template-columns: 6fr 1fr 1fr;
+  /* tres columnas: 2 a la izq, 1 más separada a la derecha */
+  column-gap: 6rem;
+  /* sparación entre columnas */
   align-items: start;
 }
 
@@ -21,14 +23,16 @@
 .footer-brand {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Alinea todo a la izquierda */
+  align-items: flex-start;
+  /* Alinea todo a la izquierda */
 }
 
 .footer-logo {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.2rem; /* Espacio mínimo antes del subtítulo */
+  margin-bottom: 0.2rem;
+  /* Espacio mínimo antes del subtítulo */
 }
 
 .footer-logo-img {
@@ -41,15 +45,18 @@
   font-size: 1.75rem;
   font-weight: 600;
   color: #000;
-  margin: 0; /* elimina espacios innecesarios */
+  margin: 0;
+  /* elimina espacios innecesarios */
 }
 
 .footer-subtitle {
   color: #00b7ff;
   font-weight: 600;
   font-size: 1rem;
-  margin: 0; /* que quede pegado debajo */
-  margin-left: 4.4rem; /* alinea el texto con el “HoloLearn” */
+  margin: 0;
+  /* que quede pegado debajo */
+  margin-left: 4.4rem;
+  /* alinea el texto con el “HoloLearn” */
 }
 
 
@@ -95,3 +102,30 @@
   border-top: 1px solid #d9ecf7;
 }
 
+[data-theme="dark"] .footer {
+  background-color: #0f161c;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+[data-theme="dark"] .footer-title,
+[data-theme="dark"] .footer-section-title {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .footer-subtitle {
+  color: #4ecbff;
+}
+
+[data-theme="dark"] .footer-link {
+  color: #c6d1db;
+}
+
+[data-theme="dark"] .footer-link:hover {
+  color: #4ecbff;
+}
+
+[data-theme="dark"] .footer-bottom {
+  background-color: rgba(0, 183, 255, .18);
+  color: #e6f5ff;
+  border-top: 1px solid rgba(255, 255, 255, .12);
+}
