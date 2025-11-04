@@ -7,6 +7,7 @@
   padding: 64px 40px;
   background-color: #ffffff;
   border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .hero-text {
@@ -24,6 +25,7 @@
   line-height: 1.1;
   color: #000000;
   letter-spacing: -1.2px;
+  transition: color 0.3s ease;
 }
 
 .hero-description {
@@ -32,8 +34,8 @@
   font-size: 20px;
   color: rgba(0, 0, 0, 0.75);
   line-height: 1.5;
+  transition: color 0.3s ease;
 }
-
 
 .hero-button {
   background-color: #00b7ff;
@@ -46,11 +48,12 @@
   border-radius: 8px;
   box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .hero-button:hover {
   background-color: #009edb;
+  transform: translateY(-1px);
 }
 
 /* ---- Imagen ---- */
@@ -66,6 +69,29 @@
   object-fit: cover;
 }
 
+/* ---- Dark Mode ---- */
+[data-theme="dark"] .hero {
+  background-color: #0d1117;
+}
+
+[data-theme="dark"] .hero-title {
+  color: #e7edf3;
+}
+
+[data-theme="dark"] .hero-description {
+  color: rgba(231, 237, 243, 0.75);
+}
+
+[data-theme="dark"] .hero-button {
+  background-color: #00b7ff;
+  color: #ffffff;
+  box-shadow: 0px 2px 6px rgba(0, 183, 255, 0.25);
+}
+
+[data-theme="dark"] .hero-button:hover {
+  background-color: #4ecbff;
+}
+
 /* ---- Responsive ---- */
 @media (min-width: 768px) {
   .hero {
@@ -74,5 +100,20 @@
 
   .hero-text {
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 36px;
+  }
+
+  .hero-description {
+    font-size: 18px;
+  }
+
+  .hero-button {
+    font-size: 18px;
+    padding: 10px 20px;
   }
 }

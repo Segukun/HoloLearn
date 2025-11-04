@@ -12,8 +12,6 @@ export default function Layout() {
         <Header />
         <main className="main">
           <Outlet /> {/* aka ce renderisan las pages Home/Courses/Login ༼ つ ◕_◕ ༽つ */}
-          <Hero/>
-          <Cards/>
         </main>
         <Footer />
       </div>
