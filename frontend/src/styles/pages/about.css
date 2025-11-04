@@ -1,0 +1,106 @@
+:root {
+  --bg: #ffffff;
+  --text: #1e1e1e;
+  --link: #00b7ff;
+  --accent: #06b7ff;
+  --surface: #ffffff;
+  --border: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] {
+  --bg: #0b0f12;
+  --text: #e7edf3;
+  --link: #4ecbff;
+  --accent: #06b7ff;
+  --surface: #0f161c;
+  --border: rgba(255, 255, 255, 0.12);
+}
+
+/* Layout */
+.about-page {
+  background: var(--bg);
+  color: var(--text);
+  padding: 60px 80px;
+  max-width: 1000px;
+  margin: 0 auto;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* Hero section */
+.about-hero {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.about-title {
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.about-subtitle {
+  font-size: 18px;
+  color: var(--link);
+}
+
+/* Sections */
+.about-section {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.about-heading {
+  font-size: 28px;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.about-section p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* Contact list */
+.contact-list {
+  list-style: none;
+  margin-top: 12px;
+  padding: 0;
+}
+.contact-list li {
+  margin: 6px 0;
+}
+.contact-list a {
+  color: var(--link);
+  text-decoration: none;
+}
+.contact-list a:hover {
+  color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .about-page {
+    padding: 40px 32px;
+  }
+  .about-title {
+    font-size: 36px;
+  }
+  .about-heading {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-page {
+    padding: 28px 20px;
+  }
+  .about-title {
+    font-size: 30px;
+  }
+  .about-heading {
+    font-size: 22px;
+  }
+}

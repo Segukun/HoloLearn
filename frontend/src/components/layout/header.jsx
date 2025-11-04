@@ -22,7 +22,7 @@ export default function Header() {
         <img src={logo} alt="HoloLearn logo" className="brand-logo" />
         <div className="brand-text">
           <h1 className="brand-title">HoloLearn</h1>
-          <p className="brand-tagline">Learn, create, go live</p>
+          <p className="brand-tagline">Learn, create, go live.</p>
         </div>
       </Link>
 
@@ -44,10 +44,10 @@ export default function Header() {
           </button>
           <ul className="profile-menu" role="menu" aria-label="Profile menu">
             <li role="menuitem"><Link to="/login">Login</Link></li>
-            <li role="menuitem"><Link to="/profile">Profile</Link></li>
+            {/* <li role="menuitem"><Link to="/profile">Profile</Link></li>
             <li role="menuitem"><Link to="/my-courses">My Courses</Link></li>
             <li className="divider" aria-hidden="true"></li>
-            <li role="menuitem"><Link to="/logout">Log out</Link></li>
+            <li role="menuitem"><Link to="/logout">Log out</Link></li> */}
           </ul>
         </div>
       </div>

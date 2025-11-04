@@ -132,7 +132,7 @@ export default function Login() {
               <span>Remember me</span>
             </label>
 
-            <Link to="/forgot" className="link-muted">Forgot password?</Link>
+            {/* <Link to="/forgot" className="link-muted">Forgot password?</Link> */}
           </div>
 
           <button

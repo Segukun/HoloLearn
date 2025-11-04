@@ -17,18 +17,20 @@
 .header {
     width: 100%;
     min-height: 96px;
-    /* keep a single, explicit height */
     background: var(--bg);
     border-bottom: 2px solid rgba(0, 183, 255, .95);
     box-shadow: 0 6px 16px rgba(0, 183, 255, .16);
     display: grid;
     grid-template-columns: auto 1fr;
-    /* left | right */
     align-items: center;
     gap: 24px;
     padding: 10px 48px;
-    position: relative;
-    z-index: 100;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    backdrop-filter: blur(6px);
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    background-clip: padding-box;
 }
 
 /* Left brand */
