@@ -27,6 +27,7 @@ function login(req, res, next) {
     req.session.isAuthenticated = true;
 
     res.json({
+      success: true, //creo que esto reemplaza al session.isAuthenticated de arriba. Pero prefiero de la otra forma.
       message: "Login successful",
       user: {
         id: results[0].iduser,
@@ -45,6 +46,7 @@ function logout(req, res, next) {
       });
     }
 
+    res.clearCookie("connect.sid"); // borra la cookie
     res.json({
       message: "Logout successful",
     });
