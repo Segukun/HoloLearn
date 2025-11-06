@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/pages/register.css";
+import { HashLink } from "react-router-hash-link";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -178,8 +179,8 @@ export default function Register() {
                                 required
                             />
                             <span>
-                                I agree to the <Link to="https://shop.hololivepro.com/pages/terms">Terms & Conditions</Link> and{" "}
-                                <Link to="https://shop.hololivepro.com/pages/privacy-policy">Privacy Policy</Link>.
+                                I agree to the <HashLink smooth to="/about#terms">Terms & Conditions</HashLink> and{" "}
+                                <HashLink smooth to="/about#privacy-policy">Privacy Policy</HashLink>.
                             </span>
                         </label>
                         <Link to="/login" className="link-muted">Already have an account?</Link>
