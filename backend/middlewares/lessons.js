@@ -2,7 +2,7 @@ const connection = require("../connection");
 const { Lesson } = require("../classes/classLesson");
 
 // Middleware: traer usuarios de la base de datos y adjuntarlos a req.users
-function fetchLessonsMiddleware(req, res, next) {
+function fetchLessons(req, res, next) {
   connection.query("SELECT * FROM lessons", (err, results) => {
     if (err) return next(err);
     req.lessons = results.map(
@@ -19,4 +19,4 @@ function respondWithLessons(req, res) {
   return res.json(req.lessons);
 }
 
-module.exports = { fetchLessonsMiddleware, respondWithLessons };
+module.exports = { fetchLessons, respondWithLessons };

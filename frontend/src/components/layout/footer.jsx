@@ -18,6 +18,7 @@ export default function Footer() {
         {/* Brand */}
         <div className="footer-brand">
           <div className="footer-logo">
+            {/* When using /public, reference with an absolute path */}
             <img
               src="/img/logos/HololearnAlt.png"
               alt="HoloLearn Logo"
