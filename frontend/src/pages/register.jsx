@@ -178,8 +178,8 @@ export default function Register() {
                                 required
                             />
                             <span>
-                                I agree to the <Link to="/terms">Terms & Conditions</Link> and{" "}
-                                <Link to="/privacy">Privacy Policy</Link>.
+                                I agree to the <Link to="https://shop.hololivepro.com/pages/terms">Terms & Conditions</Link> and{" "}
+                                <Link to="https://shop.hololivepro.com/pages/privacy-policy">Privacy Policy</Link>.
                             </span>
                         </label>
                         <Link to="/login" className="link-muted">Already have an account?</Link>

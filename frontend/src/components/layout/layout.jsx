@@ -2,6 +2,8 @@ import { Outlet } from "react-router-dom";
 import Header from "./header.jsx";
 import Footer from "./footer.jsx";
 import "../../styles/components/layout.css";
+import Hero from "./hero.jsx"
+import Cards from "./cards.jsx"
 
 export default function Layout() {
   return (

@@ -1,22 +1,14 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 import "../../styles/components/footer.css";
 
-// small presentational item
-function FooterLink({ text }) {
-  return <li className="footer-link">{text}</li>;
+function FooterList({ children }) {
+  return <ul className="footer-links">{children}</ul>;
 }
 
-function FooterSection({ title, links }) {
-  return (
-    <div className="footer-section">
-      <h3 className="footer-section-title">{title}</h3>
-      <ul className="footer-links">
-        {links.map((link, index) => (
-          <FooterLink key={index} text={link} />
-        ))}
-      </ul>
-    </div>
-  );
+function FooterItem({ children }) {
+  return <li className="footer-link">{children}</li>;
 }
 
 export default function Footer() {
@@ -34,18 +26,46 @@ export default function Footer() {
             />
             <h2 className="footer-title">HoloLearn</h2>
           </div>
-          <p className="footer-subtitle">Learn, Create, Go live</p>
+          <p className="footer-subtitle">Learn, create, go live.</p>
         </div>
 
-        {/* Sections */}
-        <FooterSection
-          title="Explore"
-          links={["Available Courses", "Categories", "Categories items"]}
-        />
-        <FooterSection
-          title="Information"
-          links={["About us", "Privacy Policy", "Terms & Conditions", "Contact"]}
-        />
+        {/* Explore (kept intact) */}
+        <div className="footer-section">
+          <h3 className="footer-section-title">Explore</h3>
+          <FooterList>
+            <FooterItem>
+              <Link to="/courses">Available Courses</Link>
+            </FooterItem>
+            <FooterItem>
+              <Link to="/categories">Categories</Link>
+            </FooterItem>
+            <FooterItem>
+              <Link to="/categories/items">Categories items</Link>
+            </FooterItem>
+          </FooterList>
+        </div>
+
+        {/* Information (now smooth-scrolling to About sections) */}
+        <div className="footer-section">
+          <h3 className="footer-section-title">Information</h3>
+          <FooterList>
+            <FooterItem>
+              <HashLink smooth to="/about#information">Information</HashLink>
+            </FooterItem>
+            <FooterItem>
+              <HashLink smooth to="/about#about-us">About us</HashLink>
+            </FooterItem>
+            <FooterItem>
+              <HashLink smooth to="/about#privacy-policy">Privacy Policy</HashLink>
+            </FooterItem>
+            <FooterItem>
+              <HashLink smooth to="/about#terms">Terms &amp; Conditions</HashLink>
+            </FooterItem>
+            <FooterItem>
+              <HashLink smooth to="/about#contact">Contact</HashLink>
+            </FooterItem>
+          </FooterList>
+        </div>
       </div>
 
       {/* Bottom bar */}

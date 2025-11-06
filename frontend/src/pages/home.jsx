@@ -1,8 +1,14 @@
+import "../styles/pages/home.css";
+import React from "react";
+import Hero from "../components/layout/hero.jsx";
+import Cards from "../components/layout/cards.jsx";
+
+
 export default function Home() {
     return (
         <section className="page">
-            <h1>Home</h1>
-            <p>Welcome to HoloLearn.</p>
+            <Hero />
+            <Cards />
         </section>
     );
 }
