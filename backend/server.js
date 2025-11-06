@@ -145,4 +145,4 @@ app.put("/user/change/email", requireAuth, changeEmail);
 app.put("/user/change/name", requireAuth, changeName);
 
 //Eliminar usuario
-app.delete("/user/delete", requireAuth, deleteUser);
+app.delete("/user/delete", requireAuth, deleteUser, logout);

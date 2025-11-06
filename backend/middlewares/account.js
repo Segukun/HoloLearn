@@ -159,7 +159,7 @@ function changeEmail(req, res, next) {
 
 //Cambiar nombre.
 function changeName(req, res, next) {
-    const { currentName, newName } = req.body;
+  const { currentName, newName } = req.body;
   const userId = req.session.userId;
 
   const sql = "SELECT full_name FROM user WHERE iduser = ?";
@@ -177,22 +177,27 @@ function changeName(req, res, next) {
       return res.status(401).send("Incorrect current name");
     }
 
-    connection.query(
-      updateSql,
-      [newName, userId],
-      (err, updateResults) => {
-        if (err) {
-          return res.status(500).send("Error updating name");
-        }
-        res.json({ message: "Name updated successfully" });
+    connection.query(updateSql, [newName, userId], (err, updateResults) => {
+      if (err) {
+        return res.status(500).send("Error updating name");
       }
-    );
+      res.json({ message: "Name updated successfully" });
+    });
   });
 }
 
 //Eliminar usuario.
 function deleteUser(req, res, next) {
+  const userId = req.session.userId;
 
+  const sql = "DELETE FROM user WHERE iduser = ?";
+
+  connection.query(sql, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send("Error deleting user");
+    }
+  });
+  res.json({ message: "User deleted successfully" });
 }
 
 // TODO: Agregar funciones para eliminar cuenta, actualizar datos, etc. Suscribirse a cursos, completar clases, etc.
