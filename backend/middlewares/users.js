@@ -1,33 +1,45 @@
 const connection = require("../connection");
 const { User } = require("../classes/classUser");
+const { Course } = require("../classes/classCourse");
+const { Lesson } = require("../classes/classLesson");
+
+//! USUARIOS EN PLURAL
 
 // Middleware: traer usuarios de la base de datos y adjuntarlos a req.users
-function fetchUsersMiddleware(req, res, next) {
+function fetchUsers(req, res, next) {
   connection.query("SELECT * FROM user", (err, results) => {
     if (err) return next(err);
     req.users = results.map(
       (u) =>
-        new User(u.iduser, u.email, u.full_name, u.password_hash, u.category)
+        new User(u.iduser, u.email, u.full_name, u.category, u.password_hash)
     );
     next();
   });
 }
 
 //Añadir los cursos a los que esta inscripto cada usuario
-function attachCoursesToUsers(req, _, next) {
-  // Implementar la lógica para adjuntar los cursos a los que está inscrito cada usuario, usar la tabla enrollments
-
-  const sql = "SELECT idcourses FROM enrollments WHERE iduser = ?";
+function attachCoursesToUsers(req, res, next) {
+  const sql =
+    "SELECT c.* FROM courses c INNER JOIN enrollments e ON c.idcourses = e.idcourses WHERE e.iduser = ?";
 
   Promise.all(
     req.users.map((user) => {
       return new Promise((resolve, reject) => {
         connection.query(sql, [user.iduser], (err, results) => {
           if (err) {
-            console.error("Error fetching courses for user:", err);
+            console.error("Error fetching courses for users:", err);
             return resolve(user); // Continue with user even if error
           }
-          const courses = results.map((r) => r.idcourses);
+          const courses = results.map(
+            (r) =>
+              new Course(
+                r.idcourses,
+                r.idinstructor,
+                r.title,
+                r.summary,
+                r.description
+              )
+          );
           user.setCourses(courses);
           resolve(user);
         });
@@ -36,7 +48,6 @@ function attachCoursesToUsers(req, _, next) {
   )
     .then((updatedUsers) => {
       req.users = updatedUsers;
-      console.log("All users after attaching courses:", req.users);
       next();
     })
     .catch((err) => {
@@ -46,10 +57,49 @@ function attachCoursesToUsers(req, _, next) {
 }
 
 //Añadir el progreso para cada usuario
-function attachProgressToUsers(req, res, next) {
-  //TODO: Implementar la lógica para adjuntar el progreso de cada usuario en el curso, traer cuantas lecciones ha completado y scar el porcentaje
+function attachLessonsToUsers(req, res, next) {
+  const sql = "SELECT * FROM lessons WHERE idcourse = ?";
 
-  next();
+  Promise.all(
+    req.users.map((user) => {
+      // Para cada usuario, procesamos sus cursos
+      return Promise.all(
+        user.courses.map((course) => {
+          return new Promise((resolve, reject) => {
+            connection.query(sql, [course.idCourse], (err, results) => {
+              if (err) {
+                console.error("Error fetching lessons for courses:", err);
+                return resolve(course); // Continue with course even if error
+              }
+              const lessons = results.map(
+                (r) =>
+                  new Lesson(
+                    r.idlessons,
+                    r.idcourse,
+                    r.title,
+                    r.content,
+                    r.lesson_order,
+                    r.content_type
+                  )
+              );
+
+              console.log(results);
+              course.setLessons(lessons);
+              resolve(course);
+            });
+          });
+        })
+      ).then(() => user);
+    })
+  )
+    .then((updatedUsers) => {
+      req.users = updatedUsers;
+      next();
+    })
+    .catch((err) => {
+      console.error("Error attaching lessons to users:", err);
+      next(err);
+    });
 }
 
 // Responde con los usuarios adjuntados a req
@@ -59,8 +109,8 @@ function respondWithUsers(req, res) {
 }
 
 module.exports = {
-  fetchUsersMiddleware,
+  fetchUsers,
   respondWithUsers,
   attachCoursesToUsers,
-  attachProgressToUsers,
+  attachLessonsToUsers,
 };

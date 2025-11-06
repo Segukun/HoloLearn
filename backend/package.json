@@ -4,6 +4,7 @@
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "express-session": "^1.18.2",
     "mysql2": "^3.15.1",
     "nodemon": "^3.1.10"
   },
@@ -11,7 +12,6 @@
   "version": "1.0.0",
   "description": "hololearn backend",
   "main": "app.js",
-  "devDependencies": {},
   "scripts": {
     "test": "run",
     "start": "node server.js"
