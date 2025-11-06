@@ -20,6 +20,7 @@ const {
   respondWithCourses,
 } = require("./middlewares/courses");
 const { fetchLessons, respondWithLessons } = require("./middlewares/lessons");
+const { fetchCategories, respondWithCategories } = require("./middlewares/categories");
 const {
   login,
   createUser,
@@ -76,7 +77,7 @@ app.get(
 
 //obtener inscripciones y responder
 
-//TODO: Obtener el progreso del curso para cada usuario
+//TODO: Obtener el progreso del curso para cada usuario.
 app.get(
   "/user/:id/progress",
   fetchUserById,
@@ -111,6 +112,7 @@ app.get(
 // ! Tabla categories
 
 //obtener categorias y responder
+app.get("/categories", fetchCategories, respondWithCategories);
 
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla course_categories --> Intermedia de courses y categories

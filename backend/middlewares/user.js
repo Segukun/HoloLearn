@@ -3,7 +3,7 @@ const { User } = require("../classes/classUser");
 const { Course } = require("../classes/classCourse");
 const { Lesson } = require("../classes/classLesson");
 
-//! USUARIOS EN SINGULAR
+//! USUARIOS EN SINGULAR 
 
 //Traer un solo usuario por ID y adjuntarlo a req.user
 function fetchUserById(req, res, next) {
@@ -91,8 +91,6 @@ function attachLessonsToUser(req, res, next) {
 }
 
 function respondWithUserProgress(req, res) {
-  if (!req.user) return res.status(500).send("No user available");
-
   //Traer la cantidad de lecciones totales y completadas por curso
   const progress = req.user.courses.map((course) => {
     const totalLessons = course.lessons.length;
