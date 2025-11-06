@@ -25,6 +25,10 @@ const {
   createUser,
   logout,
   requireAuth,
+  changePassword,
+  changeEmail,
+  changeName,
+  deleteUser,
 } = require("./middlewares/account");
 const {
   fetchUserById,
@@ -86,7 +90,7 @@ app.get(
 
 // Obtener cursos y responder
 app.get(
-  "/course",
+  "/courses",
   fetchCourses,
   attachLessonsToCourses,
   attachStudentsToCourses,
@@ -130,3 +134,15 @@ app.post("/user/create", createUser);
 
 //Logout
 app.post("/user/logout", requireAuth, logout);
+
+//Cambiar contraseña
+app.put("/user/change/pass", requireAuth, changePassword);
+
+//Cambiar email
+app.put("/user/change/email", requireAuth, changeEmail);
+
+//Cambiar nombre
+app.put("/user/change/name", requireAuth, changeName);
+
+//Eliminar usuario
+app.delete("/user/delete", requireAuth, deleteUser);
