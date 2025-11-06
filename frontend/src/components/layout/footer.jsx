@@ -39,9 +39,6 @@ export default function Footer() {
             <FooterItem>
               <Link to="/categories">Categories</Link>
             </FooterItem>
-            <FooterItem>
-              <Link to="/categories/items">Categories items</Link>
-            </FooterItem>
           </FooterList>
         </div>
 
