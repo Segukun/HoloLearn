@@ -3,7 +3,7 @@ const mysql = require("mysql2");
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "asdf", // tu contraseña de MySQL si tiene
+  password: "", // tu contraseña de MySQL si tiene es asdf en mysqlworkbench y vacio en xammp
   database: "hololearn",
 });
 
