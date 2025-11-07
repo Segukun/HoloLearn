@@ -81,7 +81,6 @@ app.get(
 
 //obtener inscripciones y responder
 
-//TODO: Obtener el progreso del curso para cada usuario.
 app.get(
   "/user/progress",
   requireAuth,

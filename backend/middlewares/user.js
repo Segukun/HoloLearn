@@ -1,4 +1,5 @@
 const connection = require("../connection");
+const Math = require("mathjs");
 const { User } = require("../classes/classUser");
 const { Course } = require("../classes/classCourse");
 const { Lesson } = require("../classes/classLesson");
@@ -93,9 +94,6 @@ function attachLessonsToUser(req, res, next) {
 }
 
 function respondWithUserProgress(req, res) {
-  // Traer la cantidad de lecciones totales y completadas por curso
-  if (!req.session.userData) return res.status(500).send("No user available");
-
   const queries = (req.session.userData.courses || []).map((course) => {
     const totalLessons = Array.isArray(course.lessons)
       ? course.lessons.length
@@ -121,7 +119,7 @@ function respondWithUserProgress(req, res) {
 
           const completedLessons =
             (results && results[0] && results[0].completed) || 0;
-          const progress = (completedLessons / totalLessons) * 100;
+          const progress = Math.floor((completedLessons / totalLessons) * 100);
           course.progress = progress;
           resolve(course);
         }
