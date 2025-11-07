@@ -3,11 +3,11 @@ const { User } = require("../classes/classUser");
 const { Course } = require("../classes/classCourse");
 const { Lesson } = require("../classes/classLesson");
 
-//! USUARIOS EN SINGULAR 
+//! USUARIOS EN SINGULAR
 
 //Traer un solo usuario por ID y adjuntarlo a req.user
 function fetchUserById(req, res, next) {
-  const userId = req.params.id;
+  const userId = req.session.userId;
   const sql = "SELECT * FROM user WHERE iduser = ?";
   connection.query(sql, [userId], (err, results) => {
     if (err) return next(err);
@@ -16,7 +16,7 @@ function fetchUserById(req, res, next) {
       return res.status(404).send("User not found");
     }
 
-    req.user = new User(
+    req.session.userData = new User(
       results[0].iduser,
       results[0].email,
       results[0].full_name,
@@ -29,10 +29,11 @@ function fetchUserById(req, res, next) {
 
 //Añadirle los cursos a los que esta inscripto el usuario
 function attachCoursesToUser(req, res, next) {
+  const userId = req.session.userId;
   const sql =
     "SELECT c.* FROM courses c INNER JOIN enrollments e ON c.idcourses = e.idcourses WHERE e.iduser = ?";
 
-  connection.query(sql, [req.user.iduser], (err, results) => {
+  connection.query(sql, [userId], (err, results) => {
     if (err) {
       return res.status(400).send("Error fetching courses for user:", err);
     }
@@ -46,7 +47,8 @@ function attachCoursesToUser(req, res, next) {
           r.description
         )
     );
-    req.user.setCourses(courses);
+
+    req.session.userData.setCourses(courses);
     next();
   });
 }
@@ -56,7 +58,7 @@ function attachLessonsToUser(req, res, next) {
   const sql = "SELECT * FROM lessons WHERE idcourse = ?";
 
   Promise.all(
-    req.user.courses.map((course) => {
+    req.session.userData.courses.map((course) => {
       return new Promise((resolve, reject) => {
         connection.query(sql, [course.idCourse], (err, results) => {
           if (err) {
@@ -81,7 +83,7 @@ function attachLessonsToUser(req, res, next) {
     })
   )
     .then((updatedCourses) => {
-      req.user.courses = updatedCourses;
+      req.session.userData.courses = updatedCourses;
       next();
     })
     .catch((err) => {
@@ -91,34 +93,66 @@ function attachLessonsToUser(req, res, next) {
 }
 
 function respondWithUserProgress(req, res) {
-  //Traer la cantidad de lecciones totales y completadas por curso
-  const progress = req.user.courses.map((course) => {
-    const totalLessons = course.lessons.length;
-    const completedLessons = 0;
+  // Traer la cantidad de lecciones totales y completadas por curso
+  if (!req.session.userData) return res.status(500).send("No user available");
 
-    //Aquí deberíamos traer el progreso real desde la base de datos y sacar el porcentaje
-    const sql = "SELECT COUNT(*) AS completed FROM lesson_progress WHERE iduser = ? AND idcourse = ? AND status = 'completed'"; //TODO: INCLUIR LA TABLA ENRROLLMENTS PARA PODER RELACIONAR, AHORA MISMO NO PUEDE ENCONTRAR EL USUARIO.
-    connection.query(sql, [req.user.iduser, course.idCourse], (err, results) => {
-      if (err) {
-        console.error("Error fetching lesson progress:", err);
-        return 0;
+  const queries = (req.session.userData.courses || []).map((course) => {
+    const totalLessons = Array.isArray(course.lessons)
+      ? course.lessons.length
+      : 0;
+    const sql =
+      "SELECT COUNT(*) AS completed FROM lesson_progress lp JOIN enrollments e ON lp.idenrollments = e.idenrollments JOIN lessons l ON lp.idlessons = l.idlessons WHERE e.iduser = ? AND l.idcourse = ? AND lp.lesson_progresscol = 'completed';";
+
+    return new Promise((resolve) => {
+      if (totalLessons === 0) {
+        course.progress = 0;
+        return resolve(course);
       }
-      completedLessons = results[0].completed;
+
+      connection.query(
+        sql,
+        [req.session.userId, course.idCourse],
+        (err, results) => {
+          if (err) {
+            console.error("Error fetching lessons progress for courses:", err);
+            course.progress = 0;
+            return resolve(course);
+          }
+
+          const completedLessons =
+            (results && results[0] && results[0].completed) || 0;
+          const progress = (completedLessons / totalLessons) * 100;
+          course.progress = progress;
+          resolve(course);
+        }
+      );
     });
-
-    return totalLessons === 0 ? 0 : (completedLessons / totalLessons) * 100;
   });
 
-  res.json({
-    userId: req.user.iduser,
-    progress: progress,
-  });
+  Promise.all(queries)
+    .then((updatedCourses) => {
+      req.session.userData.courses = updatedCourses;
+      const coursesProgress = updatedCourses.map((c) => ({
+        idCourse: c.idCourse,
+        title: c.title,
+        progress: c.progress || 0,
+      }));
+
+      res.json({
+        userId: req.session.userId,
+        courses: coursesProgress,
+      });
+    })
+    .catch((err) => {
+      console.error("Error attaching lessons progress to user:", err);
+      res.status(500).send("Error fetching user progress");
+    });
 }
 
 //Responder con el usuario adjuntado a req.user
 function respondWithUser(req, res) {
-  if (!req.user) return res.status(500).send("No user available");
-  return res.json(req.user);
+  if (!req.session.userData) return res.status(500).send("No user available");
+  return res.json(req.session.userData);
 }
 
 module.exports = {

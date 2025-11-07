@@ -20,7 +20,10 @@ const {
   respondWithCourses,
 } = require("./middlewares/courses");
 const { fetchLessons, respondWithLessons } = require("./middlewares/lessons");
-const { fetchCategories, respondWithCategories } = require("./middlewares/categories");
+const {
+  fetchCategories,
+  respondWithCategories,
+} = require("./middlewares/categories");
 const {
   login,
   createUser,
@@ -65,7 +68,8 @@ app.get("/users/summary", fetchUsers, (req, res) => {
 
 //Obtener un solo usuario por ID
 app.get(
-  "/user/:id",
+  "/user/profile",
+  requireAuth,
   fetchUserById,
   attachCoursesToUser,
   attachLessonsToUser,
@@ -79,7 +83,8 @@ app.get(
 
 //TODO: Obtener el progreso del curso para cada usuario.
 app.get(
-  "/user/:id/progress",
+  "/user/progress",
+  requireAuth,
   fetchUserById,
   attachCoursesToUser,
   attachLessonsToUser,
@@ -127,6 +132,11 @@ app.get("/lessons", fetchLessons, respondWithLessons);
 // ! Tabla lesson_progress --> Intermedia de clase e inscripciones con status(lesson_progress)
 
 // ! Manejar la cuenta del usuario: login, logout, crear cuenta, eliminar cuenta, etc. Tambien usa la tabla de users
+
+//Verify authentication
+app.get("/user/auth/check", requireAuth, (req, res) => {
+  res.json({ message: "Authenticated", userId: req.userId });
+});
 
 //Login:
 app.post("/user/login", login);
