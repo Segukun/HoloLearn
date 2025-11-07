@@ -103,30 +103,127 @@ Sessions store: `userId`, `email`, `isAuthenticated`
 
 Protected routes use `requireAuth` middleware.
 
-## Key API Endpoints
+## Backend-Frontend Connection
 
-**Authentication:**
-- `POST /user/login`: Login with email/password (bcrypt validation)
-- `POST /user/create`: Register new user
-- `POST /user/logout`: Destroy session (requires auth)
+### How to Make API Calls from Frontend
 
-**Users:**
-- `GET /users`: Get all users with courses and lessons
-- `GET /users/summary`: Get simplified user list
+The frontend communicates with the backend using **fetch API** (NOT axios despite it being installed). All API calls follow this pattern:
+
+```js
+const res = await fetch("http://localhost:3000/endpoint", {
+  method: "POST",  // or GET, PUT, DELETE
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ key: value })  // for POST/PUT only
+});
+
+if (!res.ok) {
+  const text = await res.text();
+  throw new Error(text);
+}
+
+const data = await res.json();
+```
+
+**Key Points:**
+- Backend URL: `http://localhost:3000`
+- Always use `Content-Type: application/json` header
+- Backend responds with plain text for errors, JSON for success
+- Sessions are handled automatically via cookies (no manual token management needed)
+
+### Example: Login Flow
+
+**Frontend** (login.jsx):
+```js
+const res = await fetch("http://localhost:3000/user/login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ email, password })
+});
+const data = await res.json();
+// Session cookie is automatically set by backend
+// data.user contains { id, email }
+```
+
+**Backend** (account.js):
+```js
+// Validates credentials, sets session, returns user info
+req.session.userId = results[0].iduser;
+req.session.email = results[0].email;
+req.session.isAuthenticated = true;
+res.json({ success: true, message: "Login successful", user: {...} });
+```
+
+### Example: User Registration
+
+**Frontend** (register.jsx):
+```js
+const form = new FormData(e.target);
+const name = form.get("name");
+const email = form.get("email");
+const password = form.get("password");
+
+const res = await fetch("http://localhost:3000/user/create", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name, email, password })
+});
+```
+
+**Backend** (account.js):
+```js
+// Hashes password with bcrypt, inserts into DB
+const passwordHash = bcryptjs.hashSync(password, 10);
+connection.query("INSERT INTO user (full_name, email, password_hash) VALUES (?, ?, ?)", ...);
+```
+
+## Complete API Reference
+
+### Authentication Endpoints
+- `POST /user/login`: Login with `{ email, password }` → Returns `{ success, message, user: { id, email } }`
+- `POST /user/create`: Register with `{ name, email, password }` → Returns `{ mensaje, alumno }`
+- `POST /user/logout`: Destroy session (requires auth) → Returns `{ message }`
+
+### Account Management (All require authentication)
+- `PUT /user/change/pass`: Change password with `{ currentPassword, newPassword }`
+- `PUT /user/change/email`: Change email with `{ currentEmail, newEmail }`
+- `PUT /user/change/name`: Change name with `{ currentName, newName }`
+- `DELETE /user/delete`: Delete user account (auto-logout after)
+
+### User Data Endpoints
+- `GET /users`: Get all users with courses and lessons (admin use)
+- `GET /users/summary`: Get simplified user list `{ id, email, full_name }`
 - `GET /user/:id`: Get single user with full details
 - `GET /user/:id/progress`: Get user's course progress
 
-**Courses:**
-- `GET /course`: Get all courses with lessons and students
+### Course Endpoints
+- `GET /courses`: Get all courses with lessons and students
 - `GET /course/:id`: Get single course with details
 
-**Lessons:**
+### Content Endpoints
 - `GET /lessons`: Get all lessons
+- `GET /categories`: Get all course categories
 
 ## CORS Configuration
 
 Frontend origin is whitelisted: `http://localhost:5173`
 Allowed methods: GET, POST, PUT, DELETE
+
+## Recent Changes (as of latest commits)
+
+**Account Management (commit: 753b1c2 "borrar cuenta")**:
+- Added account modification endpoints: change password, email, name, and delete account
+- All account management routes require authentication via `requireAuth` middleware
+- Delete account automatically logs user out after deletion
+
+**Categories Support (commit: 8b5e736 "Obtener categorias")**:
+- Added `middlewares/categories.js` with `fetchCategories` and `respondWithCategories`
+- New endpoint: `GET /categories` to retrieve all course categories
+
+**Login & Registration UI (commits: c31a47b, 03ff8e4)**:
+- Implemented complete login page with validation, error handling, and accessibility features
+- Registration page created with fetch API integration
+- Both pages use native fetch API, not axios
+- Form validation happens client-side before sending to backend
 
 ## Development Notes
 
@@ -136,3 +233,4 @@ Allowed methods: GET, POST, PUT, DELETE
 - Database queries use callback-based mysql2 API
 - Frontend uses React 19+ with modern patterns
 - No TypeScript - pure JavaScript on both frontend and backend
+- **Use native fetch API for HTTP requests**, not axios (despite axios being in dependencies)
