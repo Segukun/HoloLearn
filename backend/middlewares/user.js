@@ -38,6 +38,7 @@ function attachCoursesToUser(req, res, next) {
     if (err) {
       return res.status(400).send("Error fetching courses for user:", err);
     }
+
     const courses = results.map(
       (r) =>
         new Course(
@@ -61,11 +62,13 @@ function attachLessonsToUser(req, res, next) {
   Promise.all(
     req.session.userData.courses.map((course) => {
       return new Promise((resolve, reject) => {
+        
         connection.query(sql, [course.idCourse], (err, results) => {
           if (err) {
             console.error("Error fetching lessons for courses:", err);
             return resolve(course);
           }
+          
           const lessons = results.map(
             (r) =>
               new Lesson(
@@ -84,7 +87,7 @@ function attachLessonsToUser(req, res, next) {
     })
   )
     .then((updatedCourses) => {
-      req.session.userData.courses = updatedCourses;
+      req.session.userData.courses = updatedCourses;      
       next();
     })
     .catch((err) => {
@@ -95,15 +98,13 @@ function attachLessonsToUser(req, res, next) {
 
 function respondWithUserProgress(req, res) {
   const queries = (req.session.userData.courses || []).map((course) => {
-    const totalLessons = Array.isArray(course.lessons)
-      ? course.lessons.length
-      : 0;
+    const totalLessons = course.lessons.length;
     const sql =
       "SELECT COUNT(*) AS completed FROM lesson_progress lp JOIN enrollments e ON lp.idenrollments = e.idenrollments JOIN lessons l ON lp.idlessons = l.idlessons WHERE e.iduser = ? AND l.idcourse = ? AND lp.lesson_progresscol = 'completed';";
 
     return new Promise((resolve) => {
       if (totalLessons === 0) {
-        course.progress = 0;
+        course.setProgress(0);
         return resolve(course);
       }
 
@@ -113,14 +114,19 @@ function respondWithUserProgress(req, res) {
         (err, results) => {
           if (err) {
             console.error("Error fetching lessons progress for courses:", err);
-            course.progress = 0;
+            course.setProgress(0);
             return resolve(course);
           }
-
+          console.log(
+            "Course: ",
+            course.idCourse,
+            "Lesson progress results:",
+            results
+          );
           const completedLessons =
             (results && results[0] && results[0].completed) || 0;
           const progress = Math.floor((completedLessons / totalLessons) * 100);
-          course.progress = progress;
+          course.setProgress(progress);
           resolve(course);
         }
       );
@@ -147,11 +153,77 @@ function respondWithUserProgress(req, res) {
     });
 }
 
-// TODO Suscribirse a un curso
+// Suscribirse a un curso
+function subscribeToCourse(req, res, next) {
+  const userId = req.session.userId;
+  const { courseId } = req.params;
 
-// TODO Completar una clase
+  const sql =
+    "INSERT INTO enrollments (iduser, idcourses, status) VALUES (?, ?, 'active')";
 
+  connection.query(sql, [userId, courseId], (err, results) => {
+    if (err) {
+      return res.status(500).send("Error subscribing to course");
+    }
+    res.json({ message: "Successfully subscribed to course" });
+  });
+}
 
+// Completar una clase. Verificar que exista.
+function completeLesson(req, res, next) {
+  const userId = req.session.userId;
+  const { courseId, lessonId } = req.params;
+  if (!courseId || !lessonId)
+    return res.status(400).send("Missing courseId or lessonId");
+
+  const getEnrollmentSql =
+    "SELECT idenrollments FROM enrollments WHERE iduser = ? AND idcourses = ?";
+  connection.query(getEnrollmentSql, [userId, courseId], (err, results) => {
+    if (err) {
+      console.error("Error finding enrollment:", err);
+      return res.status(500).send("Error finding enrollment");
+    }
+    if (!results || results.length === 0) {
+      return res
+        .status(404)
+        .send("Enrollment not found for this user and course");
+    }
+
+    const enrollmentId = results[0].idenrollments;
+    console.log("Enrollment ID found:", enrollmentId);
+
+    const checkSql =
+      "SELECT lesson_progresscol FROM lesson_progress WHERE idenrollments = ? AND idlessons = ?";
+    connection.query(
+      checkSql,
+      [enrollmentId, lessonId],
+      (err, checkResults) => {
+        if (err) {
+          console.error("Error checking lesson progress:", err);
+          return res.status(500).send("Error checking lesson progress");
+        }
+
+        if (
+          checkResults &&
+          checkResults.length > 0 &&
+          checkResults[0].lesson_progresscol === "completed"
+        ) {
+          return res.status(200).json({ message: "Lesson already completed" });
+        }
+
+        const insertSql =
+          "INSERT INTO lesson_progress (idenrollments, idlessons, lesson_progresscol) VALUES (?, ?, 'completed') ON DUPLICATE KEY UPDATE lesson_progresscol = 'completed'";
+        connection.query(insertSql, [enrollmentId, lessonId], (err) => {
+          if (err) {
+            console.error("Error marking lesson complete:", err);
+            return res.status(500).send("Error marking lesson complete");
+          }
+          res.json({ message: "Lesson marked as completed" });
+        });
+      }
+    );
+  });
+}
 
 //Responder con el usuario adjuntado a req.session.userData
 function respondWithUser(req, res) {
@@ -163,6 +235,8 @@ module.exports = {
   fetchUserById,
   respondWithUser,
   respondWithUserProgress,
+  subscribeToCourse,
+  completeLesson,
   attachCoursesToUser,
   attachLessonsToUser,
 };

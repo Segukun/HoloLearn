@@ -38,6 +38,8 @@ const {
   fetchUserById,
   respondWithUser,
   respondWithUserProgress,
+  subscribeToCourse,
+  completeLesson,
   attachCoursesToUser,
   attachLessonsToUser,
 } = require("./middlewares/user");
@@ -88,6 +90,20 @@ app.get(
   attachCoursesToUser,
   attachLessonsToUser,
   respondWithUserProgress
+);
+
+//Suscribirse a un curso
+app.post(
+  "/user/subscribe/:courseId",
+  requireAuth,
+  subscribeToCourse
+);
+
+//Completar una clase
+app.post(
+  "/user/complete-lesson/:courseId/:lessonId",
+  requireAuth,
+  completeLesson
 );
 
 //-- -- -- -- -- -- -- -- -- --

@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const session = require("express-session"); // TODO: A revisar hoy todo lo relacionado con este modulo y con el archivo account.js
+const session = require("express-session");
 const cors = require("cors");
 
 app.use(

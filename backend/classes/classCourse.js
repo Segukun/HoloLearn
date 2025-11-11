@@ -7,6 +7,7 @@ class Course {
     this.description = description;
     this.lessons = lessons; // Lecciones que pertenecen al curso. Guardar objetos lección.
     this.students = students; // Estudiantes inscritos en el curso. Guardar objetos usuario.
+    this.progress = 0; 
   }
 
   setLessons(lessons) {
@@ -14,6 +15,9 @@ class Course {
   }
   setStudents(students) {
     this.students = students;
+  }
+  setProgress(progress) {
+    this.progress = progress;
   }
 }
 
