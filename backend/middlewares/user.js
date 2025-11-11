@@ -147,7 +147,13 @@ function respondWithUserProgress(req, res) {
     });
 }
 
-//Responder con el usuario adjuntado a req.user
+// TODO Suscribirse a un curso
+
+// TODO Completar una clase
+
+
+
+//Responder con el usuario adjuntado a req.session.userData
 function respondWithUser(req, res) {
   if (!req.session.userData) return res.status(500).send("No user available");
   return res.json(req.session.userData);

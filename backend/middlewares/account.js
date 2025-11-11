@@ -200,8 +200,6 @@ function deleteUser(req, res, next) {
   res.json({ message: "User deleted successfully" });
 }
 
-// TODO: Agregar funciones para eliminar cuenta, actualizar datos, etc. Suscribirse a cursos, completar clases, etc.
-
 module.exports = {
   login,
   createUser,
