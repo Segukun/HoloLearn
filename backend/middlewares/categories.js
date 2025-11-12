@@ -18,4 +18,6 @@ function respondWithCategories(req, res) {
   return res.json(req.categories);
 }
 
+//TODO: IMPLEMENTAR FUNCION DE FILTRADO PARA EL APARTADO DE CURSOS
+
 module.exports = { fetchCategories, respondWithCategories };
