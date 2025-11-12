@@ -158,14 +158,36 @@ function subscribeToCourse(req, res, next) {
   const userId = req.session.userId;
   const { courseId } = req.params;
 
-  const sql =
-    "INSERT INTO enrollments (iduser, idcourses, status) VALUES (?, ?, 'active')";
-
-  connection.query(sql, [userId, courseId], (err, results) => {
+  // Fijarse si el usuario esta inscripto en el curso
+  const checkSql = "SELECT * FROM enrollments WHERE iduser = ? AND idcourses = ?";
+  connection.query(checkSql, [userId, courseId], (err, results) => {
     if (err) {
-      return res.status(500).send("Error subscribing to course");
+      return res.status(500).send("Error checking enrollment status");
     }
-    res.json({ message: "Successfully subscribed to course" });
+    if (results.length > 0) {
+      return res.status(409).json({ message: "Already enrolled in this course" });
+    }
+
+    // Ver si el curso existe. esto podria ir antes para descartarlo mas facil.
+    const courseSql = "SELECT idcourses FROM courses WHERE idcourses = ?";
+    connection.query(courseSql, [courseId], (err, courseResults) => {
+      if (err) {
+        return res.status(500).send("Error checking course");
+      }
+      if (courseResults.length === 0) {
+        return res.status(404).send("Course not found");
+      }
+
+      // Insertar inscripcion
+      const insertSql = "INSERT INTO enrollments (iduser, idcourses, status) VALUES (?, ?, 'active')";
+      connection.query(insertSql, [userId, courseId], (err) => {
+        if (err) {
+          console.error("Error subscribing to course:", err);
+          return res.status(500).send("Error subscribing to course");
+        }
+        res.status(201).json({ message: "Successfully subscribed to course" });
+      });
+    });
   });
 }
 
@@ -173,55 +195,62 @@ function subscribeToCourse(req, res, next) {
 function completeLesson(req, res, next) {
   const userId = req.session.userId;
   const { courseId, lessonId } = req.params;
-  if (!courseId || !lessonId)
+  
+  if (!courseId || !lessonId) {
     return res.status(400).send("Missing courseId or lessonId");
+  }
 
-  const getEnrollmentSql =
-    "SELECT idenrollments FROM enrollments WHERE iduser = ? AND idcourses = ?";
+  // Paso 1 Ver si el usuario esta inscripto
+  const getEnrollmentSql = "SELECT idenrollments FROM enrollments WHERE iduser = ? AND idcourses = ?";
   connection.query(getEnrollmentSql, [userId, courseId], (err, results) => {
     if (err) {
       console.error("Error finding enrollment:", err);
       return res.status(500).send("Error finding enrollment");
     }
     if (!results || results.length === 0) {
-      return res
-        .status(404)
-        .send("Enrollment not found for this user and course");
+      return res.status(404).send("Not enrolled in this course");
     }
 
     const enrollmentId = results[0].idenrollments;
-    console.log("Enrollment ID found:", enrollmentId);
+    
+    // Paso 2 Verificar que la clase corresponde al curso
+    const lessonCheckSql = "SELECT idlessons FROM lessons WHERE idlessons = ? AND idcourse = ?";
+    connection.query(lessonCheckSql, [lessonId, courseId], (err, lessonResults) => {
+      if (err) {
+        console.error("Error checking lesson:", err);
+        return res.status(500).send("Error validating lesson");
+      }
+      if (!lessonResults || lessonResults.length === 0) {
+        return res.status(404).send("Lesson not found in this course");
+      }
 
-    const checkSql =
-      "SELECT lesson_progresscol FROM lesson_progress WHERE idenrollments = ? AND idlessons = ?";
-    connection.query(
-      checkSql,
-      [enrollmentId, lessonId],
-      (err, checkResults) => {
+      // Paso 3 Ver si ya esta completado
+      const checkSql = "SELECT lesson_progresscol FROM lesson_progress WHERE idenrollments = ? AND idlessons = ?";
+      connection.query(checkSql, [enrollmentId, lessonId], (err, checkResults) => {
         if (err) {
           console.error("Error checking lesson progress:", err);
           return res.status(500).send("Error checking lesson progress");
         }
 
-        if (
-          checkResults &&
-          checkResults.length > 0 &&
-          checkResults[0].lesson_progresscol === "completed"
-        ) {
-          return res.status(200).json({ message: "Lesson already completed" });
+        if (checkResults && checkResults.length > 0 && checkResults[0].lesson_progresscol === "completed") {
+          return res.status(200).json({ 
+            message: "Lesson already completed",
+          });
         }
 
-        const insertSql =
-          "INSERT INTO lesson_progress (idenrollments, idlessons, lesson_progresscol) VALUES (?, ?, 'completed') ON DUPLICATE KEY UPDATE lesson_progresscol = 'completed'";
+        // Paso 4 Marcar como completado
+        const insertSql = "INSERT INTO lesson_progress (idenrollments, idlessons, lesson_progresscol) VALUES (?, ?, 'completed') ON DUPLICATE KEY UPDATE lesson_progresscol = 'completed'";
         connection.query(insertSql, [enrollmentId, lessonId], (err) => {
           if (err) {
             console.error("Error marking lesson complete:", err);
             return res.status(500).send("Error marking lesson complete");
           }
-          res.json({ message: "Lesson marked as completed" });
+          res.status(200).json({ 
+            message: "Lesson marked as completed",
+          });
         });
-      }
-    );
+      });
+    });
   });
 }
 
