@@ -1,6 +1,5 @@
 const connection = require("../connection");
 
-// Middleware: traer usuarios de la base de datos y adjuntarlos a req.users
 function fetchCategories(req, res, next) {
   connection.query("SELECT * FROM categories", (err, results) => {
     if (err) return next(err);

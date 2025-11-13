@@ -21,76 +21,96 @@ function fetchCourses(req, res, next) {
   });
 }
 
-//Añadir lecciones a cada curso en req.courses
-function attachLessonsToCourses(req, res, next) {
-  const sql = "SELECT l.* FROM lessons l WHERE l.idcourse = ?";
-
-  Promise.all(
-    req.courses.map((course) => {
-      return new Promise((resolve, reject) => {
-        connection.query(sql, [course.idCourse], (err, results) => {
-          if (err) {
-            console.error("Error fetching lessons for courses:", err);
-            return resolve(course); // Resolver con el curso original si hay error
-          }
-          const lessons = results.map(
-            (l) =>
-              new Lesson(
-                l.idlessons,
-                l.idcourses,
-                l.title,
-                l.content,
-                l.lesson_order,
-                l.content_type
-              )
-          );
-          course.setLessons(lessons);
-          resolve(course);
-        });
-      });
-    })
-  )
-    .then((updatedCourses) => {
-      req.courses = updatedCourses;
-      next();
-    })
-    .catch((err) => {
-      console.error("Error attaching lessons to courses:", err);
-      next(err);
-    });
-}
-
-//Añadir estudiantes a cada curso en req.courses
-function attachStudentsToCourses(req, res, next) {
+function fetchCoursesByCategory(req, res, next) {
+  const categoryId = req.params.categoryId;
   const sql =
-    "SELECT u.* FROM user u INNER JOIN enrollments e ON u.iduser = e.iduser WHERE e.iduser = ?";
-
-  Promise.all(
-    req.courses.map((course) => {
-      return new Promise((resolve, reject) => {
-        connection.query(sql, [course.idCourse], (err, results) => {
-          if (err) {
-            console.error("Error fetching students for courses:", err);
-            return resolve(course); // Resolver con el curso original si hay error
-          }
-          const students = results.map(
-            (s) => new User(s.iduser, s.email, s.full_name, s.category)
-          );
-          course.setStudents(students);
-          resolve(course);
-        });
-      });
-    })
-  )
-    .then((updatedCourses) => {
-      req.courses = updatedCourses;
-      next();
-    })
-    .catch((err) => {
-      console.error("Error attaching users to courses:", err);
-      next(err);
-    });
+    "SELECT * FROM courses AS c INNER JOIN course_categories AS ca ON c.idcourses = ca.idcourse WHERE ca.idcategories = ?";
+  connection.query(sql, [categoryId], (err, results) => {
+    if (err) return next(err);
+    console.log("Courses fetched for category:", results);
+    req.courses = results.map(
+      (c) =>
+        new Course(
+          c.idcourses,
+          c.idinstructor,
+          c.title,
+          c.summary,
+          c.description
+        )
+    );
+    next();
+  });
 }
+// ! Añadir lecciones a cada curso en req.courses innecesario
+// function attachLessonsToCourses(req, res, next) {
+//   const sql = "SELECT l.* FROM lessons l WHERE l.idcourse = ?";
+
+//   Promise.all(
+//     req.courses.map((course) => {
+//       return new Promise((resolve, reject) => {
+//         connection.query(sql, [course.idCourse], (err, results) => {
+//           if (err) {
+//             console.error("Error fetching lessons for courses:", err);
+//             return resolve(course); // Resolver con el curso original si hay error
+//           }
+//           const lessons = results.map(
+//             (l) =>
+//               new Lesson(
+//                 l.idlessons,
+//                 l.idcourses,
+//                 l.title,
+//                 l.content,
+//                 l.lesson_order,
+//                 l.content_type
+//               )
+//           );
+//           course.setLessons(lessons);
+//           resolve(course);
+//         });
+//       });
+//     })
+//   )
+//     .then((updatedCourses) => {
+//       req.courses = updatedCourses;
+//       next();
+//     })
+//     .catch((err) => {
+//       console.error("Error attaching lessons to courses:", err);
+//       next(err);
+//     });
+// }
+
+// ! Añadir estudiantes a cada curso en req.courses innecesario
+// function attachStudentsToCourses(req, res, next) {
+//   const sql =
+//     "SELECT u.* FROM user u INNER JOIN enrollments e ON u.iduser = e.iduser WHERE e.iduser = ?";
+
+//   Promise.all(
+//     req.courses.map((course) => {
+//       return new Promise((resolve, reject) => {
+//         connection.query(sql, [course.idCourse], (err, results) => {
+//           if (err) {
+//             console.error("Error fetching students for courses:", err);
+//             return resolve(course); // Resolver con el curso original si hay error
+//           }
+//           const students = results.map(
+//             (s) => new User(s.iduser, s.email, s.full_name, s.category)
+//           );
+//           course.setStudents(students);
+//           resolve(course);
+//         });
+//       });
+//     })
+//   )
+//     .then((updatedCourses) => {
+//       req.courses = updatedCourses;
+//       next();
+//     })
+//     .catch((err) => {
+//       console.error("Error attaching users to courses:", err);
+//       next(err);
+//     });
+// }
 
 //Lo mismo pero en singular
 function fetchCourseById(req, res, next) {
@@ -162,8 +182,9 @@ function respondWithCourse(req, res) {
 module.exports = {
   fetchCourses,
   fetchCourseById,
-  attachLessonsToCourses,
-  attachStudentsToCourses,
+  //attachLessonsToCourses,
+  //attachStudentsToCourses,
+  fetchCoursesByCategory,
   attachLessonsToCourseById,
   attachStudentsToCourseById,
   respondWithCourse,

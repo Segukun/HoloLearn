@@ -12,10 +12,11 @@ const {
 const {
   fetchCourses,
   fetchCourseById,
-  attachLessonsToCourses,
-  attachStudentsToCourses,
+  //attachLessonsToCourses,
+  //attachStudentsToCourses,
   attachLessonsToCourseById,
   attachStudentsToCourseById,
+  fetchCoursesByCategory,
   respondWithCourse,
   respondWithCourses,
 } = require("./middlewares/courses");
@@ -113,8 +114,13 @@ app.post(
 app.get(
   "/courses",
   fetchCourses,
-  attachLessonsToCourses,
-  attachStudentsToCourses,
+  respondWithCourses
+);
+
+//Obtener cursos por categoria
+app.get(
+  "/courses/category/:categoryId",
+  fetchCoursesByCategory,
   respondWithCourses
 );
 
