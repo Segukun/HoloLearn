@@ -153,7 +153,7 @@ app.get("/user/auth/check", requireAuth, (req, res) => {
     isAuthenticated: !!req.session.isAuthenticated,
     user: req.session.email || null,
     message: "Authenticated",
-    userId: req.userId,
+    userId: req.session.userId,
   });
 });
 

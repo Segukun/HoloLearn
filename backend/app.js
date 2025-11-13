@@ -7,6 +7,7 @@ app.use(
   cors({
     origin: ["http://localhost:5173"], //puerto en donde react se aloja
     methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 
