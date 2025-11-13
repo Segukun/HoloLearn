@@ -1,0 +1,159 @@
+/* === VARIABLES DE COLOR === */
+:root {
+  --bg: #ffffff;
+  --text: #1e1e1e;
+  --link: #00b7ff;
+  --accent: #06b7ff;
+  --surface: #ffffff;
+  --surface-elev: #ffffff;
+  --border: #e6e6e6;
+  --muted: #6b7280;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0f12;
+  --text: #e7edf3;
+  --link: #4ecbff;
+  --accent: #06b7ff;
+  --surface: #0f161c;
+  --surface-elev: #121b22;
+  --border: rgba(255, 255, 255, 0.12);
+  --muted: #9aa7b3;
+}
+
+/* === CONTENEDOR GENERAL COMO SEPARADOR === */
+.section-separator {
+  width: 100%;
+  background-color: var(--surface);
+  border-top: 2px solid var(--border);
+  border-bottom: 2px solid var(--border);
+  padding: 4rem 0;
+  display: flex;
+  justify-content: center;
+  border-radius: 10px;
+}
+
+/* === SECCIÓN PRINCIPAL === */
+.vtuber-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
+  max-width: 1100px;
+  width: 100%;
+  background-color: var(--surface);
+  color: var(--text);
+}
+
+.vtuber-content {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+  width: 100%;
+}
+
+.vtuber-text {
+  flex: 1;
+}
+
+.vtuber-text h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+/* === CARDS DE SUBTÍTULOS === */
+.vtuber-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.vtuber-sub {
+  background-color: var(--surface-elev);
+  border-radius: 0.8rem;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.vtuber-sub h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0.3rem 0;
+}
+
+.vtuber-sub p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.icon {
+  color: var(--link);
+  margin-right: 0.4rem;
+  font-size: 0.8rem;
+}
+
+/* === BOTONES === */
+.vtuber-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #009edc;
+}
+
+.btn-secondary {
+  background-color: var(--surface-elev);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--surface);
+}
+
+/* === IMAGEN === */
+.vtuber-image img {
+  width: 370px;
+  height: auto;
+  border-radius: 0.8rem;
+  object-fit: cover;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .vtuber-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .vtuber-image img {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .vtuber-buttons {
+    justify-content: center;
+  }
+}

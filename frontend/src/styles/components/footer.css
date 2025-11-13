@@ -13,9 +13,7 @@
   padding: 3rem 1.5rem;
   display: grid;
   grid-template-columns: 6fr 1fr 1fr;
-  /* tres columnas: 2 a la izq, 1 más separada a la derecha */
   column-gap: 6rem;
-  /* sparación entre columnas */
   align-items: start;
 }
 
@@ -24,7 +22,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* Alinea todo a la izquierda */
 }
 
 .footer-logo {
@@ -32,7 +29,6 @@
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.2rem;
-  /* Espacio mínimo antes del subtítulo */
 }
 
 .footer-logo-img {
@@ -46,7 +42,6 @@
   font-weight: 600;
   color: #000;
   margin: 0;
-  /* elimina espacios innecesarios */
 }
 
 .footer-subtitle {
@@ -54,9 +49,7 @@
   font-weight: 600;
   font-size: 1rem;
   margin: 0;
-  /* que quede pegado debajo */
   margin-left: 4.4rem;
-  /* alinea el texto con el “HoloLearn” */
 }
 
 
