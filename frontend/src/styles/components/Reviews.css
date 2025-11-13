@@ -1,0 +1,114 @@
+/* ==== VARIABLES DE COLOR ==== */
+:root {
+  --bg: #ffffff;
+  --text: #1e1e1e;
+  --link: #00b7ff;
+  --accent: #06b7ff;
+  --surface: #ffffff;
+  --surface-elev: #ffffff;
+  --border: #e6e6e6;
+  --muted: #6b7280;
+}
+
+[data-theme="dark"] {
+  --bg: #0b0f12;
+  --text: #e7edf3;
+  --link: #4ecbff;
+  --accent: #06b7ff;
+  --surface: #0f161c;
+  --surface-elev: #121b22;
+  --border: rgba(255, 255, 255, 0.12);
+  --muted: #9aa7b3;
+}
+
+/* ==== SECCIÓN GENERAL ==== */
+.reviews-section {
+  text-align: center;
+  margin: 5rem auto;
+  max-width: 1200px;
+  padding: 1rem 2rem 4rem;
+  background: transparent;
+  color: var(--text);
+}
+
+
+/* TÍTULO */
+.reviews-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2,5rem;
+  text-align: left;
+}
+
+/* CONT. TARJETAS */
+.reviews-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* TARJETAS */
+.review-card {
+  background: var(--surface-elev);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  flex: 1 1 30%;
+  padding: 2rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+}
+
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* TEXTO  */
+.review-quote {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+/* ==== USUARIO ==== */
+.review-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.review-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.review-info h4 {
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.review-info p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 900px) {
+  .reviews-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .review-card {
+    width: 100%;
+    max-width: 400px;
+  }
+}
