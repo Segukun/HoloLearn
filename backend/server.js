@@ -98,7 +98,7 @@ app.get(
 app.post("/user/subscribe/:courseId", requireAuth, subscribeToCourse);
 
 //Desuscribirse de un curso
-app.delete("/user/unsubscribe/:courseId", requireAuth, unsuscribeFromCourse)
+app.delete("/user/unsubscribe/:courseId", requireAuth, unsuscribeFromCourse);
 
 //Completar una clase
 app.post(
@@ -149,7 +149,12 @@ app.get("/lessons", fetchLessons, respondWithLessons);
 
 //Verify authentication
 app.get("/user/auth/check", requireAuth, (req, res) => {
-  res.json({ message: "Authenticated", userId: req.userId });
+  res.json({
+    isAuthenticated: !!req.session.isAuthenticated,
+    user: req.session.email || null,
+    message: "Authenticated",
+    userId: req.userId,
+  });
 });
 
 //Login:

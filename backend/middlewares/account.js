@@ -28,6 +28,7 @@ function login(req, res, next) {
     req.session.isAuthenticated = true;
 
     res.json({
+
       success: true, //creo que esto reemplaza al session.isAuthenticated de arriba. Pero prefiero de la otra forma.
       message: "Login successful",
       user: {
@@ -191,7 +192,7 @@ function deleteUser(req, res, next) {
   const userId = req.session.userId;
 
   const sql = "DELETE FROM user WHERE iduser = ?";
-
+  //Borrar las claves foraneas primero
   connection.query(sql, [userId], (err, results) => {
     if (err) {
       return res.status(500).send("Error deleting user");
