@@ -62,13 +62,12 @@ function attachLessonsToUser(req, res, next) {
   Promise.all(
     req.session.userData.courses.map((course) => {
       return new Promise((resolve, reject) => {
-        
         connection.query(sql, [course.idCourse], (err, results) => {
           if (err) {
             console.error("Error fetching lessons for courses:", err);
             return resolve(course);
           }
-          
+
           const lessons = results.map(
             (r) =>
               new Lesson(
@@ -87,7 +86,7 @@ function attachLessonsToUser(req, res, next) {
     })
   )
     .then((updatedCourses) => {
-      req.session.userData.courses = updatedCourses;      
+      req.session.userData.courses = updatedCourses;
       next();
     })
     .catch((err) => {
@@ -159,13 +158,16 @@ function subscribeToCourse(req, res, next) {
   const { courseId } = req.params;
 
   // Fijarse si el usuario esta inscripto en el curso
-  const checkSql = "SELECT * FROM enrollments WHERE iduser = ? AND idcourses = ?";
+  const checkSql =
+    "SELECT * FROM enrollments WHERE iduser = ? AND idcourses = ?";
   connection.query(checkSql, [userId, courseId], (err, results) => {
     if (err) {
       return res.status(500).send("Error checking enrollment status");
     }
     if (results.length > 0) {
-      return res.status(409).json({ message: "Already enrolled in this course" });
+      return res
+        .status(409)
+        .json({ message: "Already enrolled in this course" });
     }
 
     // Ver si el curso existe. esto podria ir antes para descartarlo mas facil.
@@ -179,7 +181,8 @@ function subscribeToCourse(req, res, next) {
       }
 
       // Insertar inscripcion
-      const insertSql = "INSERT INTO enrollments (iduser, idcourses, status) VALUES (?, ?, 'active')";
+      const insertSql =
+        "INSERT INTO enrollments (iduser, idcourses, status) VALUES (?, ?, 'active')";
       connection.query(insertSql, [userId, courseId], (err) => {
         if (err) {
           console.error("Error subscribing to course:", err);
@@ -191,17 +194,55 @@ function subscribeToCourse(req, res, next) {
   });
 }
 
+function unsuscribeFromCourse(req, res, next) {
+  const userId = req.session.userId;
+  const { courseId } = req.params;
+
+  // Fijarse si el usuario esta inscripto en el curso
+  const checkSql =
+    "SELECT * FROM enrollments WHERE iduser = ? AND idcourses = ?";
+  connection.query(checkSql, [userId, courseId], (err, results) => {
+    if (err) {
+      return res.status(500).send("Error checking enrollment status");
+    }
+    if (results.length > 0) {
+      //borrar las lesson progress con este idenrollment antes para no hacer cossas raras con las foreign keys
+      const deleteProgressSql =
+        "DELETE FROM lesson_progress WHERE idenrollments = ?";
+      connection.query(deleteProgressSql, [results[0].idenrollments], (err) => {
+        if (err) {
+          console.error("Error deleting lesson progress:", err);
+          return res.status(500).send("Error unsubscribing from course");
+        }
+      });
+
+      const deleteSql =
+        "DELETE FROM enrollments WHERE iduser = ? AND idcourses = ?";
+      connection.query(deleteSql, [userId, courseId], (err) => {
+        if (err) {
+          console.error("Error unsubscribing from course:", err);
+          return res.status(500).send("Error unsubscribing from course");
+        }
+      });
+      res
+        .status(200)
+        .json({ message: "Successfully unsubscribed from course" });
+    }
+  });
+}
+
 // Completar una clase. Verificar que exista.
 function completeLesson(req, res, next) {
   const userId = req.session.userId;
   const { courseId, lessonId } = req.params;
-  
+
   if (!courseId || !lessonId) {
     return res.status(400).send("Missing courseId or lessonId");
   }
 
   // Paso 1 Ver si el usuario esta inscripto
-  const getEnrollmentSql = "SELECT idenrollments FROM enrollments WHERE iduser = ? AND idcourses = ?";
+  const getEnrollmentSql =
+    "SELECT idenrollments FROM enrollments WHERE iduser = ? AND idcourses = ?";
   connection.query(getEnrollmentSql, [userId, courseId], (err, results) => {
     if (err) {
       console.error("Error finding enrollment:", err);
@@ -212,45 +253,60 @@ function completeLesson(req, res, next) {
     }
 
     const enrollmentId = results[0].idenrollments;
-    
+
     // Paso 2 Verificar que la clase corresponde al curso
-    const lessonCheckSql = "SELECT idlessons FROM lessons WHERE idlessons = ? AND idcourse = ?";
-    connection.query(lessonCheckSql, [lessonId, courseId], (err, lessonResults) => {
-      if (err) {
-        console.error("Error checking lesson:", err);
-        return res.status(500).send("Error validating lesson");
-      }
-      if (!lessonResults || lessonResults.length === 0) {
-        return res.status(404).send("Lesson not found in this course");
-      }
-
-      // Paso 3 Ver si ya esta completado
-      const checkSql = "SELECT lesson_progresscol FROM lesson_progress WHERE idenrollments = ? AND idlessons = ?";
-      connection.query(checkSql, [enrollmentId, lessonId], (err, checkResults) => {
+    const lessonCheckSql =
+      "SELECT idlessons FROM lessons WHERE idlessons = ? AND idcourse = ?";
+    connection.query(
+      lessonCheckSql,
+      [lessonId, courseId],
+      (err, lessonResults) => {
         if (err) {
-          console.error("Error checking lesson progress:", err);
-          return res.status(500).send("Error checking lesson progress");
+          console.error("Error checking lesson:", err);
+          return res.status(500).send("Error validating lesson");
+        }
+        if (!lessonResults || lessonResults.length === 0) {
+          return res.status(404).send("Lesson not found in this course");
         }
 
-        if (checkResults && checkResults.length > 0 && checkResults[0].lesson_progresscol === "completed") {
-          return res.status(200).json({ 
-            message: "Lesson already completed",
-          });
-        }
+        // Paso 3 Ver si ya esta completado
+        const checkSql =
+          "SELECT lesson_progresscol FROM lesson_progress WHERE idenrollments = ? AND idlessons = ?";
+        connection.query(
+          checkSql,
+          [enrollmentId, lessonId],
+          (err, checkResults) => {
+            if (err) {
+              console.error("Error checking lesson progress:", err);
+              return res.status(500).send("Error checking lesson progress");
+            }
 
-        // Paso 4 Marcar como completado
-        const insertSql = "INSERT INTO lesson_progress (idenrollments, idlessons, lesson_progresscol) VALUES (?, ?, 'completed') ON DUPLICATE KEY UPDATE lesson_progresscol = 'completed'";
-        connection.query(insertSql, [enrollmentId, lessonId], (err) => {
-          if (err) {
-            console.error("Error marking lesson complete:", err);
-            return res.status(500).send("Error marking lesson complete");
+            if (
+              checkResults &&
+              checkResults.length > 0 &&
+              checkResults[0].lesson_progresscol === "completed"
+            ) {
+              return res.status(200).json({
+                message: "Lesson already completed",
+              });
+            }
+
+            // Paso 4 Marcar como completado
+            const insertSql =
+              "INSERT INTO lesson_progress (idenrollments, idlessons, lesson_progresscol) VALUES (?, ?, 'completed') ON DUPLICATE KEY UPDATE lesson_progresscol = 'completed'";
+            connection.query(insertSql, [enrollmentId, lessonId], (err) => {
+              if (err) {
+                console.error("Error marking lesson complete:", err);
+                return res.status(500).send("Error marking lesson complete");
+              }
+              res.status(200).json({
+                message: "Lesson marked as completed",
+              });
+            });
           }
-          res.status(200).json({ 
-            message: "Lesson marked as completed",
-          });
-        });
-      });
-    });
+        );
+      }
+    );
   });
 }
 
@@ -264,6 +320,7 @@ module.exports = {
   fetchUserById,
   respondWithUser,
   respondWithUserProgress,
+  unsuscribeFromCourse,
   subscribeToCourse,
   completeLesson,
   attachCoursesToUser,

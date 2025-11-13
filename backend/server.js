@@ -39,6 +39,7 @@ const {
   fetchUserById,
   respondWithUser,
   respondWithUserProgress,
+  unsuscribeFromCourse,
   subscribeToCourse,
   completeLesson,
   attachCoursesToUser,
@@ -94,11 +95,10 @@ app.get(
 );
 
 //Suscribirse a un curso
-app.post(
-  "/user/subscribe/:courseId",
-  requireAuth,
-  subscribeToCourse
-);
+app.post("/user/subscribe/:courseId", requireAuth, subscribeToCourse);
+
+//Desuscribirse de un curso
+app.delete("/user/unsubscribe/:courseId", requireAuth, unsuscribeFromCourse)
 
 //Completar una clase
 app.post(
@@ -111,18 +111,7 @@ app.post(
 // ! Tabla courses
 
 // Obtener cursos y responder
-app.get(
-  "/courses",
-  fetchCourses,
-  respondWithCourses
-);
-
-//Obtener cursos por categoria
-app.get(
-  "/courses/category/:categoryId",
-  fetchCoursesByCategory,
-  respondWithCourses
-);
+app.get("/courses", fetchCourses, respondWithCourses);
 
 app.get(
   "/course/:id",
@@ -132,8 +121,6 @@ app.get(
   respondWithCourse
 );
 
-//TODO: Obtener el profesor
-
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla categories
 
@@ -142,6 +129,12 @@ app.get("/categories", fetchCategories, respondWithCategories);
 
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla course_categories --> Intermedia de courses y categories
+//Obtener cursos por categoria
+app.get(
+  "/courses/category/:categoryId",
+  fetchCoursesByCategory,
+  respondWithCourses
+);
 
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla lessons
