@@ -28,7 +28,6 @@ function login(req, res, next) {
     req.session.isAuthenticated = true;
 
     res.json({
-
       success: true, //creo que esto reemplaza al session.isAuthenticated de arriba. Pero prefiero de la otra forma.
       message: "Login successful",
       user: {
@@ -190,15 +189,69 @@ function changeName(req, res, next) {
 //Eliminar usuario.
 function deleteUser(req, res, next) {
   const userId = req.session.userId;
-
-  const sql = "DELETE FROM user WHERE iduser = ?";
-  //Borrar las claves foraneas primero
-  connection.query(sql, [userId], (err, results) => {
+  
+  const sqlEnrollmentId =
+    "SELECT idenrollments FROM enrollments WHERE iduser = ?";
+    
+  connection.query(sqlEnrollmentId, [userId], (err, enrollmentResults) => {
     if (err) {
-      return res.status(500).send("Error deleting user");
+      return res.status(500).send("Error fetching enrollment id");
     }
+    
+    // Si no hay enrollments, ir directo a borrar el usuario
+    if (enrollmentResults.length === 0) {
+      const sqlUser = "DELETE FROM user WHERE iduser = ?";
+      connection.query(sqlUser, [userId], (err, results) => {
+        if (err) {
+          return res.status(500).send("Error deleting user");
+        }
+        // NO enviar respuesta, pasar al siguiente middleware (logout)
+        next();
+      });
+      return;
+    }
+    
+    const sqlProgress = "DELETE FROM lesson_progress WHERE idenrollments = ?";
+    
+    Promise.all(
+      enrollmentResults.map((enrollment) => {
+        return new Promise((resolve, reject) => {
+          connection.query(
+            sqlProgress,
+            [enrollment.idenrollments],
+            (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+              resolve();
+            }
+          );
+        });
+      })
+    )
+      .then(() => {
+        const sqlEnrollment = "DELETE FROM enrollments WHERE iduser = ?";
+        connection.query(sqlEnrollment, [userId], (err, results) => {
+          if (err) {
+            return res.status(500).send("Error deleting enrollments");
+          }
+          
+          const sqlUser = "DELETE FROM user WHERE iduser = ?";
+          connection.query(sqlUser, [userId], (err, results) => {
+            if (err) {
+              return res.status(500).send("Error deleting user");
+            }
+            
+            // NO destruir sesión ni enviar respuesta aquí
+            // Pasar al siguiente middleware (logout)
+            next();
+          });
+        });
+      })
+      .catch((err) => {
+        return res.status(500).send("Error deleting lesson progress: " + err);
+      });
   });
-  res.json({ message: "User deleted successfully" });
 }
 
 module.exports = {
