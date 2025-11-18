@@ -1,253 +1,157 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/pages/register.css";
-import { HashLink } from "react-router-hash-link";
+import axios from "axios";
 
 export default function Register() {
-    const [status, setStatus] = useState(null);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus(null);
+    setError("");
 
-    //Obtengo los datos del formulario
-    const form = new FormData(e.target);
-    const name = form.get("name");
-    const email = form.get("email")
-    const password = form.get("password");
-
-    //Comprobar que los campos no estén vacíos
-    if (!name || !email || !password) {
-      setStatus("complete all fields");
+    // Simple front-end check
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      setError("Please complete all fields.");
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:3000/user/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
+      setLoading(true);
 
-      //Si la respuesta no es ok
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text);
-      }
+      const res = await axios.post(
+        "http://localhost:3000/user/create",
+        { name, email, password },
+        { withCredentials: true }
+      );
 
-      const data = await res.json();
-      console.log("POST response:", data);
+      console.log("Register response:", res.data);
 
-      setStatus("User created succesfully");
-      e.target.reset();
-    navigate("/");
+      // On success go to login page
+      navigate("/login");
     } catch (err) {
-      console.log(err);
-      setStatus("Error: " + err.message);
+      console.error(err);
+      const status = err?.response?.status;
+
+      if (status === 400) {
+        setError("Please complete all fields.");
+      } else if (status === 500) {
+        setError("Server error while creating the account.");
+      } else {
+        setError("Could not create the account. Try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
+  const nameInvalid = !!error && !name.trim();
+  const emailInvalid = !!error && !email.trim();
+  const pwdInvalid = !!error && !password.trim();
+
   return (
-    <form onSubmit={handleSubmit} method="post">
-      <input type="text" name="name" placeholder="Nombre" />
-      <input type="password" name="password" placeholder="Contraseña" />
-      <input type="email" name="email" id="email" placeholder="ejemplo@ejemplo.com" />
-      <button type="submit">Create account</button>
-      {status && <p id="agregar">{status}</p>}
-    </form>
-  )
+    <main className="register-page" aria-labelledby="reg-title">
+      <section className="register-card">
+        <header className="reg-header">
+          <div className="reg-brand">
+            <img
+              src="/img/logos/HololearnAlt.png"
+              alt="HoloLearn"
+              className="reg-logo"
+            />
+            <div>
+              <h1 id="reg-title" className="reg-title">
+                Create your HoloLearn account
+              </h1>
+              <p className="reg-subtitle">Learn, create, go live</p>
+            </div>
+          </div>
+        </header>
 
-    // form state
-    // const [name, setName] = useState("");
-    // const [email, setEmail] = useState("");
-    // const [pwd, setPwd] = useState("");
-    // const [pwd2, setPwd2] = useState("");
-    // const [showPwd, setShowPwd] = useState(false);
-    // const [showPwd2, setShowPwd2] = useState(false);
-    // const [agree, setAgree] = useState(false);
-    // const [error, setError] = useState("");
-    // const [loading, setLoading] = useState(false);
-    // const errRef = useRef(null);
+        {error && (
+          <div className="reg-alert" role="alert" aria-live="assertive">
+            {error}
+          </div>
+        )}
 
-    // // validation
-    // const nameValid = useMemo(() => name.trim().length >= 2, [name]);
-    // const emailValid = useMemo(() => /^\S+@\S+\.\S+$/.test(email), [email]);
-    // const pwdValid = useMemo(() => pwd.length >= 6, [pwd]);
-    // const matchValid = useMemo(() => pwd && pwd === pwd2, [pwd, pwd2]);
-    // const formValid = nameValid && emailValid && pwdValid && matchValid && agree;
+        <form className="reg-form" onSubmit={handleSubmit} noValidate>
+          {/* Name */}
+          <div className="form-row">
+            <label htmlFor="name" className="form-label">
+              Full name
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              className={`form-input ${nameInvalid ? "is-invalid" : ""}`}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Hoshimachi Suisei"
+            />
+          </div>
 
-    // useEffect(() => {
-    //     if (error && errRef.current) errRef.current.focus();
-    // }, [error]);
+          {/* Email */}
+          <div className="form-row">
+            <label htmlFor="email" className="form-label">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              className={`form-input ${emailInvalid ? "is-invalid" : ""}`}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+            />
+          </div>
 
-    // const onSubmit = async (e) => {
-    //     e.preventDefault();
-    //     setError("");
-    //     if (!formValid) {
-    //         setError("Please complete all fields correctly and accept the terms.");
-    //         return;
-    //     }
-    //     setLoading(true);
-    //     try {
-    //         // --- MOCK REGISTER: replace with real API call later ---
-    //         await new Promise((r) => setTimeout(r, 500));
+          {/* Password */}
+          <div className="form-row">
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="new-password"
+              className={`form-input ${pwdInvalid ? "is-invalid" : ""}`}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••"
+            />
+          </div>
 
-    //         // After success, you might receive a token from the server
-    //         const fakeToken = "HL_NEW_USER_" + Date.now();
-    //         localStorage.setItem("authToken", fakeToken);
-    //         localStorage.setItem("authEmail", email);
-    //         localStorage.setItem("authName", name);
+          {/* Link to Login */}
+          <div className="form-row row-inline">
+            <span>
+              Already have an account?{" "}
+              <Link to="/login" className="link-muted">
+                Sign in
+              </Link>
+            </span>
+          </div>
 
-    //         navigate("/");
-    //     } catch (e1) {
-    //         setError("Registration failed. Please try again.");
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    // return (
-    //     <main className="register-page" aria-labelledby="reg-title">
-    //         <section className="register-card">
-    //             <header className="reg-header">
-    //                 <div className="reg-brand">
-    //                     <img src="/img/logos/HololearnAlt.png" alt="HoloLearn" className="reg-logo" />
-    //                     <div>
-    //                         <h1 id="reg-title" className="reg-title">Create your HoloLearn account</h1>
-    //                         <p className="reg-subtitle">Learn, create, go live</p>
-    //                     </div>
-    //                 </div>
-    //             </header>
-
-    //             {error && (
-    //                 <div
-    //                     className="reg-alert"
-    //                     role="alert"
-    //                     aria-live="assertive"
-    //                     tabIndex={-1}
-    //                     ref={errRef}
-    //                 >
-    //                     {error}
-    //                 </div>
-    //             )}
-
-    //             <form className="reg-form" onSubmit={onSubmit} noValidate>
-    //                 {/* Name */}
-    //                 <div className="form-row">
-    //                     <label htmlFor="name" className="form-label">Full name</label>
-    //                     <input
-    //                         id="name"
-    //                         type="text"
-    //                         className={`form-input ${name && !nameValid ? "is-invalid" : ""}`}
-    //                         value={name}
-    //                         onChange={(e) => setName(e.target.value)}
-    //                         placeholder="Hoshimachi Suisei"
-    //                         required
-    //                     />
-    //                     {name && !nameValid && <span className="form-hint">At least 2 characters.</span>}
-    //                 </div>
-
-    //                 {/* Email */}
-    //                 <div className="form-row">
-    //                     <label htmlFor="email" className="form-label">Email</label>
-    //                     <input
-    //                         id="email"
-    //                         type="email"
-    //                         inputMode="email"
-    //                         autoComplete="email"
-    //                         className={`form-input ${email && !emailValid ? "is-invalid" : ""}`}
-    //                         value={email}
-    //                         onChange={(e) => setEmail(e.target.value)}
-    //                         placeholder="you@example.com"
-    //                         required
-    //                     />
-    //                     {email && !emailValid && (
-    //                         <span className="form-hint">Please enter a valid email address.</span>
-    //                     )}
-    //                 </div>
-
-    //                 {/* Password */}
-    //                 <div className="form-row">
-    //                     <label htmlFor="pwd" className="form-label">Password</label>
-    //                     <div className="pwd-field">
-    //                         <input
-    //                             id="pwd"
-    //                             type={showPwd ? "text" : "password"}
-    //                             autoComplete="new-password"
-    //                             className={`form-input ${pwd && !pwdValid ? "is-invalid" : ""}`}
-    //                             value={pwd}
-    //                             onChange={(e) => setPwd(e.target.value)}
-    //                             placeholder="••••••"
-    //                             minLength={6}
-    //                             required
-    //                         />
-    //                         <button
-    //                             type="button"
-    //                             className="pwd-toggle"
-    //                             aria-label={showPwd ? "Hide password" : "Show password"}
-    //                             onClick={() => setShowPwd((v) => !v)}
-    //                         >
-    //                             {showPwd ? "🙈" : "👁️"}
-    //                         </button>
-    //                     </div>
-    //                     {pwd && !pwdValid && <span className="form-hint">At least 6 characters.</span>}
-    //                 </div>
-
-    //                 {/* Confirm */}
-    //                 <div className="form-row">
-    //                     <label htmlFor="pwd2" className="form-label">Confirm password</label>
-    //                     <div className="pwd-field">
-    //                         <input
-    //                             id="pwd2"
-    //                             type={showPwd2 ? "text" : "password"}
-    //                             autoComplete="new-password"
-    //                             className={`form-input ${pwd2 && !matchValid ? "is-invalid" : ""}`}
-    //                             value={pwd2}
-    //                             onChange={(e) => setPwd2(e.target.value)}
-    //                             placeholder="••••••"
-    //                             minLength={6}
-    //                             required
-    //                         />
-    //                         <button
-    //                             type="button"
-    //                             className="pwd-toggle"
-    //                             aria-label={showPwd2 ? "Hide password" : "Show password"}
-    //                             onClick={() => setShowPwd2((v) => !v)}
-    //                         >
-    //                             {showPwd2 ? "🙈" : "👁️"}
-    //                         </button>
-    //                     </div>
-    //                     {pwd2 && !matchValid && <span className="form-hint">Passwords do not match.</span>}
-    //                 </div>
-
-    //                 {/* Terms */}
-    //                 <div className="form-row row-inline">
-    //                     <label className="checkbox">
-    //                         <input
-    //                             type="checkbox"
-    //                             checked={agree}
-    //                             onChange={(e) => setAgree(e.target.checked)}
-    //                             required
-    //                         />
-    //                         <span>
-    //                             I agree to the <HashLink smooth to="/about#terms">Terms & Conditions</HashLink> and{" "}
-    //                             <HashLink smooth to="/about#privacy-policy">Privacy Policy</HashLink>.
-    //                         </span>
-    //                     </label>
-    //                     <Link to="/login" className="link-muted">Already have an account?</Link>
-    //                 </div>
-
-    //                 <button
-    //                     className="reg-btn"
-    //                     type="submit"
-    //                     disabled={!formValid || loading}
-    //                     aria-busy={loading ? "true" : "false"}
-    //                 >
-    //                     {loading ? "Creating account…" : "Create account"}
-    //                 </button>
-    //             </form>
-    //         </section>
-    //     </main>
-    // );
+          <button
+            className="reg-btn"
+            type="submit"
+            disabled={loading}
+            aria-busy={loading ? "true" : "false"}
+          >
+            {loading ? "Creating account…" : "Create account"}
+          </button>
+        </form>
+      </section>
+    </main>
+  );
 }
