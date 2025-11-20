@@ -1,6 +1,7 @@
 import React from "react";
 import "../../styles/components/heroVtuber.css";
-import vtuberImg from "../../../public/img/logos/BondWaifu.png"; // ajusta ruta según tus carpetas
+import vtuberImg from "../../../public/img/logos/BondWaifu.png"; 
+import { Link } from "react-router-dom";
 
 export default function HeroVtuber() {
   return (
@@ -13,41 +14,45 @@ export default function HeroVtuber() {
             <div className="vtuber-card">
               <div className="vtuber-sub">
                 <span className="icon">●</span>
-                <h4>Da vida a tu personaje virtual</h4>
+                <h4>Bring your virtual character to life</h4>
                 <p>
-                  Aprende a crear tu propio avatar y comienza tu historia en el
-                  mundo del streaming. No necesitas experiencia, solo ganas de
-                  expresarte.
+                  Learn to create your own avatar and begin your story in the world of
+                  streaming. You don’t need experience, just the desire to express yourself.
                 </p>
               </div>
 
               <div className="vtuber-sub">
                 <span className="icon">▲</span>
-                <h4>Diseña tu identidad digital</h4>
+                <h4>Design your digital identity</h4>
                 <p>
-                  Descubre cómo construir un estilo único, configurar tu modelo
-                  y transmitir en Twitch o YouTube con confianza y autenticidad.
+                  Discover how to build a unique style, set up your model, and stream on
+                  Twitch or YouTube with confidence and authenticity.
                 </p>
               </div>
 
               <div className="vtuber-sub">
                 <span className="icon">▲</span>
-                <h4>Conecta con tu comunidad</h4>
+                <h4>Connect with your community</h4>
                 <p>
-                  Explora las herramientas y técnicas más usadas por Vtubers,
-                  aprende a cautivar a tu audiencia y deja tu huella en la
-                  escena virtual.
+                  Explore the most used tools and techniques by Vtubers, learn to captivate
+                  your audience, and leave your mark on the virtual scene.
                 </p>
               </div>
             </div>
 
             <div className="vtuber-buttons">
-              <button className="btn-primary">Ver contenido del curso</button>
-            <a href="https://youtu.be/dQw4w9WgXcQ?si=NrJjTPu_TtkDMMFR" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className="btn-secondary"   > Mirar presentación </a>
+              <Link to="/courses" className="btn-primary">
+                View course content
+              </Link>
 
+              <a
+                href="https://www.youtube.com/watch?v=4hdVZQS7DU4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-secondary"
+              >
+                Watch presentation
+              </a>
             </div>
           </div>
 

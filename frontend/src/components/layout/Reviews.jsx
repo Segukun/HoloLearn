@@ -8,24 +8,25 @@ import Garu from "../../../public/img/logos/Garu.jpg";
 export default function Reviews() {
   const reviews = [
     {
-      quote: "“Un elogio magnífico”",
-      name: "Walter",
-      description: "Aprendí React de forma clara y práctica. El curso me ayudó a crear mis primeras apps reales.",
-      img: Walter,
-    },
-    {
-      quote: "“Un feedback fantástico”",
-      name: "Bondiola",
-      description: "El programa Fitness para Creadores cambió mi rutina y energía frente a cámara. Recomendado.",
-      img: Bondiola,
-    },
-    {
-      quote: "“Una reseña brillante”",
-      name: "Choco",
-      description: "El curso de Vtuber fue increíble, me enseñó todo para transmitir con confianza y estilo.",
-      img: Garu,
-    },
-  ];
+quote: "“A magnificent compliment”",
+name: "Walter",
+description: "I learned React in a clear and practical way. The course helped me create my first real apps.",
+img: Walter,
+},
+{
+  quote: "“Fantastic feedback”",
+  name: "Bondiola",
+  description: "The Fitness for Creators program changed my routine and on-camera energy. Highly recommended.",
+  img: Bondiola,
+},
+{
+  quote: "“A brilliant review”",
+  name: "Choco",
+  description: "The Vtuber course was amazing; it taught me everything to stream with confidence and style.",
+  img: Garu,
+},
+];
+
 
   return (
     <section className="reviews-section">
