@@ -5,10 +5,12 @@ import logo from "../../assets/logos/HololearnAlt.png";
 import avatar from "../../assets/img/profileicon.png";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+//Creo que seria bueno añadir un alert cuando el usuario se loguea o se desloguea
 export default function Header() {
   // Theme
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "light");
+  const [theme, setTheme] = useState(
+    () => localStorage.getItem("theme") || "light"
+  );
 
   // Auth state (logged in or not)
   const [isAuth, setIsAuth] = useState(false);
@@ -79,13 +81,19 @@ export default function Header() {
           className="theme-toggle"
           onClick={toggleTheme}
           aria-label="Toggle theme"
-          title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+          title={
+            theme === "light" ? "Switch to dark mode" : "Switch to light mode"
+          }
         >
           {theme === "light" ? "🌙" : "☀️"}
         </button>
 
         <div className="profile">
-          <button className="profile-btn" aria-haspopup="menu" aria-expanded="false">
+          <button
+            className="profile-btn"
+            aria-haspopup="menu"
+            aria-expanded="false"
+          >
             <img src={avatar} alt="Profile" />
           </button>
 
@@ -95,7 +103,7 @@ export default function Header() {
                 <li role="menuitem">
                   <Link to="/profile">My profile</Link>
                 </li>
-                
+
                 {/* <li role="menuitem">
                   <Link to="/my-courses">My courses</Link>
                 </li> */}

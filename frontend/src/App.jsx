@@ -16,6 +16,7 @@ export default function App() {
           <Route path="about" element={<About />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          {/* Creo que hay que añadir la ruta a profile aca */}
         </Route>
       </Routes>
     </Router>
