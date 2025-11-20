@@ -73,7 +73,6 @@
     align-items: center;
     justify-content: flex-end;
     gap: 20px;
-    /* single source of truth (was duplicated) */
 }
 
 /* Profile avatar & menu */
@@ -91,6 +90,7 @@
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .25));
 }
 
+/* ========== IMPROVED PROFILE AVATAR (HOVER) ========== */
 .profile-btn img {
     width: 50px;
     height: 50px;
@@ -98,6 +98,24 @@
     border: 3px solid var(--accent);
     background: #fff;
     object-fit: cover;
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        transform .18s ease;
+}
+
+/* Light mode hover */
+.profile-btn img:hover {
+    transform: translateY(-2px) scale(1.04);
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(0, 183, 255, 0.35);
+}
+
+/* Dark mode → softer + clearer light-blue glow */
+[data-theme="dark"] .profile-btn img:hover {
+    border-color: #4ecbff;
+    box-shadow: 0 0 16px rgba(78, 203, 255, 0.45);
+    transform: translateY(-2px) scale(1.05);
 }
 
 /* Dropdown */

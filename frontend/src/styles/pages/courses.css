@@ -1,13 +1,108 @@
-.course-page{
-    padding: 20px;
+/* Layout */
+.course-page {
+    padding: 40px 24px 80px;
+    background: var(--bg);
+    color: var(--text);
+    min-height: calc(100dvh - 0px);
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.course-list{
-    display: flex;
-    flex-wrap: wrap;
+/* Header */
+.course-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.course-title {
+    font-size: 36px;
+    font-weight: 800;
+    margin: 0;
+    color: var(--text);
+}
+
+.course-subtitle {
+    margin-top: 8px;
+    font-size: 18px;
+    color: var(--link);
+    font-weight: 600;
+}
+
+/* Course list grid */
+.course-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 380px));
+    gap: 28px;
     justify-content: center;
-    gap: 20px;
+    width: 100%;
+    padding: 0;
+    list-style: none;
+}
+
+/* Course card */
+.course-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.14);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform .12s ease, box-shadow .2s ease;
+}
+
+.course-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* Card text hierarchy */
+.course-card-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    margin: 0 0 6px;
+}
+
+.course-card-summary {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--link);
+    margin: 0 0 10px;
+}
+
+.course-card-desc {
+    font-size: 15px;
+    color: var(--text);
+    margin: 0 0 20px;
+    line-height: 1.6;
+}
+
+/* Button */
+.course-btn {
+    margin-top: auto;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    color: white;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform .08s ease, box-shadow .2s ease;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.course-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .course-title {
+        font-size: 30px;
+    }
 }
