@@ -9,7 +9,7 @@ export default function HeroVtuber() {
       <section className="vtuber-section">
         <div className="vtuber-content">
           <div className="vtuber-text">
-            <h2>Ser Vtuber: Introducción al Streaming Virtual</h2>
+            <h2>Being a Vtuber: Introduction to Virtual Streaming</h2>
 
             <div className="vtuber-card">
               <div className="vtuber-sub">

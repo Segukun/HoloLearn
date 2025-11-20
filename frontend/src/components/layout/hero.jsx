@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import imgHeroImage from "../../../public/img/logos/heroimg.jpg"
 import "../../styles/components/hero.css"
 export default function Hero() {
@@ -13,7 +14,7 @@ export default function Hero() {
           Level up your skills with streaming, programming, design, and wellness lessons — all in one place.
         </p>
 
-        <button className="hero-button">Explore Courses</button>
+        <Link to={"/courses"} className="hero-button">Explore Courses</Link>
       </div>
 
       
