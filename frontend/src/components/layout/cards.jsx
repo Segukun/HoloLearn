@@ -21,23 +21,23 @@ function Card({ image, title, description }) {
 export default function CardsSection() {
   return (
     <section className="cards-section">
-      <h2 className="section-title">Variedad de cursos</h2>
+      <h2 className="section-title">Variety of Courses</h2>
 
       <div className="cards-container">
         <Card
           image={imgImage}
-          title="Profesional en Clash Royale"
-          description="Aprende estrategias avanzadas, gestión de mazos y preparación para torneos con jugadores experimentados."
+          title="Professional in Clash Royale"
+          description="Learn advanced strategies, deck management, and tournament preparation with experienced players."
         />
         <Card
           image={imgImage1}
-          title="Introducción a React"
-          description="Desarrolla interfaces web modernas y dinámicas usando React, JSX y Hooks para crear tus propias aplicaciones."
+          title="Introduction to React"
+          description="Develop modern and dynamic web interfaces using React, JSX, and Hooks to create your own applications."
         />
         <Card
           image={imgImage2}
-          title="Fitness para Creadores"
-          description="Mejora tu postura, energía y hábitos saludables con rutinas simples diseñadas para gamers y creadores digitales."
+          title="Fitness for Creators"
+          description="Improve your posture, energy, and healthy habits with simple routines designed for gamers and digital creators."
         />
       </div>
     </section>
