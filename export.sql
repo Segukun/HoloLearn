@@ -1,10 +1,10 @@
 -- DeepSeek: dump for XAMPP / MySQL 5.7
 -- Generated for import into XAMPP (utf8mb4, InnoDB)
--- WARNING: This will create and populate the database `deepseek_test`. Change the name if needed.
+-- WARNING: This will create and populate the database `hololearn2`. Change the name if needed.
 
-DROP DATABASE IF EXISTS `deepseek_test`;
-CREATE DATABASE `deepseek_test` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `deepseek_test`;
+DROP DATABASE IF EXISTS `hololearn2`;
+CREATE DATABASE `hololearn2` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `hololearn2`;
 
 -- Temporarily disable foreign key checks for bulk import
 SET FOREIGN_KEY_CHECKS = 0;
