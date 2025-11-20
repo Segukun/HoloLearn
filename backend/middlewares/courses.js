@@ -3,7 +3,7 @@ const { Course } = require("../classes/classCourse");
 const { Lesson } = require("../classes/classLesson");
 const { User } = require("../classes/classUser");
 
-// Middleware: traer usuarios de la base de datos y adjuntarlos a req.users
+// traer todos los cursos
 function fetchCourses(req, res, next) {
   connection.query("SELECT * FROM courses", (err, results) => {
     if (err) return next(err);
@@ -21,6 +21,7 @@ function fetchCourses(req, res, next) {
   });
 }
 
+//Traer los cursos por categoria
 function fetchCoursesByCategory(req, res, next) {
   const categoryId = req.params.categoryId;
   const sql =
@@ -112,7 +113,7 @@ function fetchCoursesByCategory(req, res, next) {
 //     });
 // }
 
-//Lo mismo pero en singular
+// ! Lo mismo pero en singular
 function fetchCourseById(req, res, next) {
   const courseId = req.params.id;
   const sql = "SELECT * FROM courses WHERE idcourses = ?";

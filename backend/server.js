@@ -12,7 +12,7 @@ const {
 const {
   fetchCourses,
   fetchCourseById,
-  //attachLessonsToCourses,
+  //attachLessonsToCourses, funciones que no se van a usar
   //attachStudentsToCourses,
   attachLessonsToCourseById,
   attachStudentsToCourseById,
@@ -60,7 +60,7 @@ app.get(
   respondWithUsers
 );
 
-// Ejemplo de uso de middleware en otra ruta con un manejador personalizado
+// Ejemplo de uso de middleware en otra ruta con un manejador personalizado. no se va a usar pero esta bueno tenerlo.
 app.get("/users/summary", fetchUsers, (req, res) => {
   const summary = req.users.map((u) => ({
     id: u.iduser,
@@ -70,7 +70,7 @@ app.get("/users/summary", fetchUsers, (req, res) => {
   res.json(summary);
 });
 
-//Obtener un solo usuario por ID
+//Obtener los datos del usuario autenticado y sus cursos y lecciones
 app.get(
   "/user/profile",
   requireAuth,
@@ -83,8 +83,7 @@ app.get(
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla enrollments --> Intermedia de users y courses con status
 
-//obtener inscripciones y responder
-
+//obtener inscripciones y responder con el progreso del usuario autenticado
 app.get(
   "/user/progress",
   requireAuth,
@@ -113,6 +112,7 @@ app.post(
 // Obtener cursos y responder
 app.get("/courses", fetchCourses, respondWithCourses);
 
+// Obtener un curso por id, con sus lecciones y estudiantes inscriptos
 app.get(
   "/course/:id",
   fetchCourseById,
@@ -124,11 +124,12 @@ app.get(
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla categories
 
-//obtener categorias y responder
+//obtener categorias y responder. se usaria para filtrar cursos.
 app.get("/categories", fetchCategories, respondWithCategories);
 
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla course_categories --> Intermedia de courses y categories
+
 //Obtener cursos por categoria
 app.get(
   "/courses/category/:categoryId",
@@ -139,15 +140,13 @@ app.get(
 //-- -- -- -- -- -- -- -- -- --
 // ! Tabla lessons
 
-//Obtener clases y responder
+//Obtener clases y responder. no tiene tanta utilidad.
 app.get("/lessons", fetchLessons, respondWithLessons);
 
 //-- -- -- -- -- -- -- -- -- --
-// ! Tabla lesson_progress --> Intermedia de clase e inscripciones con status(lesson_progress)
-
 // ! Manejar la cuenta del usuario: login, logout, crear cuenta, eliminar cuenta, etc. Tambien usa la tabla de users
 
-//Verify authentication
+// Devolver si el usuario esta autenticado y otros datos de sesion
 app.get("/user/auth/check", requireAuth, (req, res) => {
   res.json({
     isAuthenticated: !!req.session.isAuthenticated,

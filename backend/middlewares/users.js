@@ -3,7 +3,7 @@ const { User } = require("../classes/classUser");
 const { Course } = require("../classes/classCourse");
 const { Lesson } = require("../classes/classLesson");
 
-//! USUARIOS EN PLURAL
+//! USUARIOS EN PLURAL - NO SE VA A USAR CASI NADA
 
 // Middleware: traer usuarios de la base de datos y adjuntarlos a req.users
 function fetchUsers(req, res, next) {

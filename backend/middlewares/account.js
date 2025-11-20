@@ -17,18 +17,19 @@ function login(req, res, next) {
     if (results.length === 0) {
       return res.status(404).send("User not found");
     }
-
+    //Comparar la contraseña que mando el usuario con el hash que vino desde la db
     let autenticado = bcryptjs.compareSync(password, results[0].password_hash);
     if (!autenticado) {
       return res.status(401).send("Incorrect password");
     }
 
+    // asignar a la sesion los datos del usuario y un booleano que indica que esta authenticado.
     req.session.userId = results[0].iduser;
     req.session.email = results[0].email;
     req.session.isAuthenticated = true;
 
     res.json({
-      success: true, //creo que esto reemplaza al session.isAuthenticated de arriba. Pero prefiero de la otra forma.
+      success: true, // creo que esto puede reemplazar al session.isAuthenticated de arriba. Pero prefiero de la otra forma.
       message: "Login successful",
       user: {
         id: results[0].iduser,
@@ -38,8 +39,9 @@ function login(req, res, next) {
   });
 }
 
-//Logout
+// Logout
 function logout(req, res, next) {
+  // destruir la sesion
   req.session.destroy((err) => {
     if (err) {
       return res.status(500).json({
@@ -47,13 +49,14 @@ function logout(req, res, next) {
       });
     }
 
-    res.clearCookie("connect.sid"); // borra la cookie, no se si es necesario, funcionaba sin esto
+    res.clearCookie("connect.sid"); // borra la cookie, no se si es necesario, funcionaba sin esto la ultima vez.
     res.json({
       message: "Logout successful",
     });
   });
 }
 
+// funcion para pedir que el usuario este autenticado
 function requireAuth(req, res, next) {
   if (!req.session.isAuthenticated) {
     return res.status(401).json({
@@ -63,7 +66,7 @@ function requireAuth(req, res, next) {
   next();
 }
 
-//Create user
+// crear usuario
 function createUser(req, res, next) {
   const { name, email, password } = req.body;
 
@@ -85,8 +88,6 @@ function createUser(req, res, next) {
     });
   });
 }
-
-// estas funciones habria que usarla junto con requireAuth.
 
 //Cambiar contraseña.
 function changePassword(req, res, next) {
@@ -205,7 +206,6 @@ function deleteUser(req, res, next) {
         if (err) {
           return res.status(500).send("Error deleting user");
         }
-        // NO enviar respuesta, pasar al siguiente middleware (logout)
         next();
       });
       return;
@@ -242,8 +242,7 @@ function deleteUser(req, res, next) {
               return res.status(500).send("Error deleting user");
             }
             
-            // NO destruir sesión ni enviar respuesta aquí
-            // Pasar al siguiente middleware (logout)
+            // NO destruir sesión ni enviar respuesta aca, pasar al siguiente middleware (logout)
             next();
           });
         });

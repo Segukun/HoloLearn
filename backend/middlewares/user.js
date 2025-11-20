@@ -4,9 +4,9 @@ const { User } = require("../classes/classUser");
 const { Course } = require("../classes/classCourse");
 const { Lesson } = require("../classes/classLesson");
 
-//! USUARIOS EN SINGULAR
+//! USUARIOS EN SINGULAR - No van a ser utilizadas por el front pero estan buenas
 
-//Traer un solo usuario por ID y adjuntarlo a req.user
+//Traer un solo usuario por ID y adjuntarlo a req.session.userData, porque el usuario ya esta logueado
 function fetchUserById(req, res, next) {
   const userId = req.session.userId;
   const sql = "SELECT * FROM user WHERE iduser = ?";
@@ -55,7 +55,7 @@ function attachCoursesToUser(req, res, next) {
   });
 }
 
-//Añadirle el progreso de clases al usuario
+//Añadirle las clases al usuario
 function attachLessonsToUser(req, res, next) {
   const sql = "SELECT * FROM lessons WHERE idcourse = ?";
 
@@ -95,11 +95,14 @@ function attachLessonsToUser(req, res, next) {
     });
 }
 
+// Responder con el progreso del usuario 
 function respondWithUserProgress(req, res) {
+  // para cada curso del usuario...
+  const sql =
+      "SELECT COUNT(*) AS completed FROM lesson_progress lp JOIN enrollments e ON lp.idenrollments = e.idenrollments JOIN lessons l ON lp.idlessons = l.idlessons WHERE e.iduser = ? AND l.idcourse = ? AND lp.lesson_progresscol = 'completed';";
+      // La movi aca arriba a la variable porque no tiene sentido definirla dentro del map
   const queries = (req.session.userData.courses || []).map((course) => {
     const totalLessons = course.lessons.length;
-    const sql =
-      "SELECT COUNT(*) AS completed FROM lesson_progress lp JOIN enrollments e ON lp.idenrollments = e.idenrollments JOIN lessons l ON lp.idlessons = l.idlessons WHERE e.iduser = ? AND l.idcourse = ? AND lp.lesson_progresscol = 'completed';";
 
     return new Promise((resolve) => {
       if (totalLessons === 0) {
@@ -126,13 +129,13 @@ function respondWithUserProgress(req, res) {
             (results && results[0] && results[0].completed) || 0;
           const progress = Math.floor((completedLessons / totalLessons) * 100);
           course.setProgress(progress);
-          resolve(course);
+          resolve(course); //devuelve el curso con el progreso incluido, que se suma al array para las prozimas promesas
         }
       );
     });
   });
 
-  Promise.all(queries)
+  Promise.all(queries) //Ahora si para todos los cursos actualizados, guardar la informacion importante en una variable y devolverla junto a el id del usuario
     .then((updatedCourses) => {
       req.session.userData.courses = updatedCourses;
       const coursesProgress = updatedCourses.map((c) => ({
@@ -170,7 +173,7 @@ function subscribeToCourse(req, res, next) {
         .json({ message: "Already enrolled in this course" });
     }
 
-    // Ver si el curso existe. esto podria ir antes para descartarlo mas facil.
+    // Ver si el curso existe. 
     const courseSql = "SELECT idcourses FROM courses WHERE idcourses = ?";
     connection.query(courseSql, [courseId], (err, courseResults) => {
       if (err) {
@@ -180,7 +183,7 @@ function subscribeToCourse(req, res, next) {
         return res.status(404).send("Course not found");
       }
 
-      // Insertar inscripcion
+      // Insertar inscripcion al curso en enrollments
       const insertSql =
         "INSERT INTO enrollments (iduser, idcourses, status) VALUES (?, ?, 'active')";
       connection.query(insertSql, [userId, courseId], (err) => {
@@ -231,7 +234,7 @@ function unsuscribeFromCourse(req, res, next) {
   });
 }
 
-// Completar una clase. Verificar que exista.
+// Completar una clase. 
 function completeLesson(req, res, next) {
   const userId = req.session.userId;
   const { courseId, lessonId } = req.params;
@@ -291,7 +294,7 @@ function completeLesson(req, res, next) {
               });
             }
 
-            // Paso 4 Marcar como completado
+            // Paso 4 Marcar como completado - no va a haber mas estados
             const insertSql =
               "INSERT INTO lesson_progress (idenrollments, idlessons, lesson_progresscol) VALUES (?, ?, 'completed') ON DUPLICATE KEY UPDATE lesson_progresscol = 'completed'";
             connection.query(insertSql, [enrollmentId, lessonId], (err) => {

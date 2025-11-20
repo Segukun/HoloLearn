@@ -11,7 +11,7 @@ function fetchCategories(req, res, next) {
   });
 }
 
-// Responde con las clases adjuntados a req
+// Responde con las categorias adjuntados a req
 function respondWithCategories(req, res) {
   if (!req.categories) return res.status(500).send("No categories available");
   return res.json(req.categories);
