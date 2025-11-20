@@ -5,6 +5,7 @@ import Courses from "./pages/courses.jsx";
 import About from "./pages/about.jsx";
 import Login from "./pages/login.jsx";
 import Register from "./pages/register.jsx";
+import Profile from "./pages/profile.jsx";
 
 export default function App() {
   return (
@@ -16,7 +17,7 @@ export default function App() {
           <Route path="about" element={<About />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          {/* Creo que hay que añadir la ruta a profile aca */}
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
     </Router>
